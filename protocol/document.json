@@ -1,0 +1,293 @@
+{
+  "$comment": "Форма документа вида -- объявления, а не значения. Снимок несёт разрешённые значения, документ несёт вопросы. Сгенерировано из живых документов, закреплено tests/test_document.py.",
+  "version": "1.0",
+  "nodes": {
+    "accordion": {
+      "required": [
+        "children",
+        "id",
+        "label",
+        "open",
+        "type"
+      ],
+      "optional": [
+        "visible"
+      ]
+    },
+    "button": {
+      "required": [
+        "action",
+        "enabled",
+        "icon",
+        "id",
+        "label",
+        "place",
+        "style",
+        "type",
+        "visible"
+      ],
+      "optional": []
+    },
+    "col": {
+      "required": [
+        "children",
+        "id",
+        "span",
+        "type"
+      ],
+      "optional": []
+    },
+    "field": {
+      "required": [
+        "ftype",
+        "id",
+        "label",
+        "name",
+        "options",
+        "place",
+        "placeholder",
+        "readonly",
+        "required",
+        "scope",
+        "type",
+        "visible",
+        "widget"
+      ],
+      "optional": [
+        "choices",
+        "comodel"
+      ]
+    },
+    "filter": {
+      "required": [
+        "default",
+        "domain",
+        "id",
+        "label",
+        "type"
+      ],
+      "optional": []
+    },
+    "group": {
+      "required": [
+        "children",
+        "cols",
+        "id",
+        "label",
+        "surface",
+        "type"
+      ],
+      "optional": []
+    },
+    "icon": {
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "optional": []
+    },
+    "list": {
+      "required": [
+        "column_nodes",
+        "columns",
+        "display",
+        "domain",
+        "empty",
+        "handle_field",
+        "handle_hidden",
+        "id",
+        "index",
+        "item",
+        "label",
+        "menu",
+        "model",
+        "model_label",
+        "open",
+        "order",
+        "own_columns",
+        "page_size",
+        "row_height",
+        "search",
+        "swipe_delete",
+        "swipe_label",
+        "type"
+      ],
+      "optional": [],
+      "$comment": "column_nodes -- узлы ячеек при columns=(...). Заголовки в columns описывают шапку, нарисовать по ним строку нельзя."
+    },
+    "menu": {
+      "required": [
+        "children",
+        "icon",
+        "id",
+        "place",
+        "type"
+      ],
+      "optional": []
+    },
+    "pill": {
+      "required": [
+        "id",
+        "type",
+        "value",
+        "when"
+      ],
+      "optional": []
+    },
+    "repeat": {
+      "required": [
+        "children",
+        "id",
+        "model",
+        "type"
+      ],
+      "optional": [
+        "domain",
+        "order"
+      ]
+    },
+    "row": {
+      "required": [
+        "children",
+        "id",
+        "type"
+      ],
+      "optional": []
+    },
+    "search": {
+      "required": [
+        "default_filter",
+        "default_sort",
+        "fields",
+        "filters",
+        "icon",
+        "placeholder",
+        "sorts",
+        "type"
+      ],
+      "optional": []
+    },
+    "section": {
+      "required": [
+        "id",
+        "subtitle",
+        "title",
+        "type"
+      ],
+      "optional": []
+    },
+    "sort": {
+      "required": [
+        "default",
+        "id",
+        "label",
+        "orders",
+        "reorderable",
+        "section",
+        "type"
+      ],
+      "optional": []
+    },
+    "tab": {
+      "required": [
+        "children",
+        "fab",
+        "id",
+        "label",
+        "title",
+        "type"
+      ],
+      "optional": []
+    },
+    "tabs": {
+      "required": [
+        "children",
+        "id",
+        "page",
+        "type"
+      ],
+      "optional": []
+    },
+    "text": {
+      "required": [
+        "id",
+        "type",
+        "value"
+      ],
+      "optional": []
+    },
+    "view": {
+      "required": [
+        "children",
+        "crumbs",
+        "dismiss",
+        "model",
+        "name",
+        "state",
+        "title",
+        "title_is_code",
+        "type"
+      ],
+      "optional": []
+    }
+  },
+  "actions": {
+    "create": {
+      "required": [
+        "draft",
+        "model",
+        "target",
+        "type",
+        "values",
+        "view"
+      ],
+      "optional": []
+    },
+    "delete": {
+      "required": [
+        "confirm",
+        "domain",
+        "model",
+        "record_id",
+        "swipe",
+        "type"
+      ],
+      "optional": []
+    },
+    "logic": {
+      "required": [
+        "args",
+        "closes_screen",
+        "name",
+        "type"
+      ],
+      "optional": [],
+      "doc": "Позвать объявленное действие -- модуль WASM, лежащий в этой же базе. Имя -- всё, что вид о логике знает: на каком языке она написана и где лежит, документ вида знать не должен. Ключи записи в args не повторяются: их подставляет рантайм по сигнатуре объявления -- см. manifest в protocol/logic.json."
+    },
+    "open": {
+      "required": [
+        "record_id",
+        "target",
+        "type",
+        "view"
+      ],
+      "optional": []
+    },
+    "save": {
+      "required": [
+        "type"
+      ],
+      "optional": []
+    },
+    "set": {
+      "required": [
+        "field",
+        "scope",
+        "type",
+        "value"
+      ],
+      "optional": []
+    }
+  }
+}

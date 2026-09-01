@@ -1,0 +1,325 @@
+{
+  "$comment": "Грамматика выражений: какие узлы бывают и как каждый записан. Одно дерево на три языка объявления и на оба вычислителя. Литерал -- тоже выражение, список -- перечень выражений (sort=). Порождается oneframework.model.exprschema.document(), сторожится tests/test_expression_grammar.py. Руками не править: правка уедет при первой пересборке.",
+  "version": 1,
+  "sentinels": {
+    "name": "<имя>",
+    "child": {
+      "r": "<узел>"
+    },
+    "text": "<текст>"
+  },
+  "literals": [
+    "boolean",
+    "null",
+    "number",
+    "string"
+  ],
+  "nodes": {
+    "unset": {
+      "keys": {
+        "unset": {
+          "one_of": [
+            true
+          ]
+        }
+      },
+      "sample": {
+        "unset": true
+      }
+    },
+    "record_ref": {
+      "keys": {
+        "r": {
+          "name": true
+        }
+      },
+      "sample": {
+        "r": "<имя>"
+      }
+    },
+    "view_ref": {
+      "keys": {
+        "v": {
+          "name": true
+        }
+      },
+      "sample": {
+        "v": "<имя>"
+      }
+    },
+    "item_ref": {
+      "keys": {
+        "i": {
+          "name": true
+        }
+      },
+      "sample": {
+        "i": "<имя>"
+      }
+    },
+    "lookup": {
+      "keys": {
+        "lookup": {
+          "name": true
+        },
+        "key": {
+          "expr": true
+        },
+        "get": {
+          "expr": true
+        }
+      },
+      "sample": {
+        "lookup": "<имя>",
+        "key": {
+          "r": "<узел>"
+        },
+        "get": {
+          "r": "<узел>"
+        }
+      }
+    },
+    "cmp": {
+      "keys": {
+        "op": {
+          "one_of": [
+            "!=",
+            "<",
+            "<=",
+            "=",
+            ">",
+            ">="
+          ]
+        },
+        "l": {
+          "expr": true
+        },
+        "r": {
+          "expr": true
+        }
+      },
+      "sample": {
+        "op": "!=",
+        "l": {
+          "r": "<узел>"
+        },
+        "r": {
+          "r": "<узел>"
+        }
+      }
+    },
+    "and": {
+      "keys": {
+        "op": {
+          "one_of": [
+            "&"
+          ]
+        },
+        "p": {
+          "exprs": true
+        }
+      },
+      "sample": {
+        "op": "&",
+        "p": [
+          {
+            "r": "<узел>"
+          },
+          {
+            "r": "<узел>"
+          }
+        ]
+      }
+    },
+    "or": {
+      "keys": {
+        "op": {
+          "one_of": [
+            "|"
+          ]
+        },
+        "p": {
+          "exprs": true
+        }
+      },
+      "sample": {
+        "op": "|",
+        "p": [
+          {
+            "r": "<узел>"
+          },
+          {
+            "r": "<узел>"
+          }
+        ]
+      }
+    },
+    "not": {
+      "keys": {
+        "op": {
+          "one_of": [
+            "!"
+          ]
+        },
+        "e": {
+          "expr": true
+        }
+      },
+      "sample": {
+        "op": "!",
+        "e": {
+          "r": "<узел>"
+        }
+      }
+    },
+    "is_null": {
+      "keys": {
+        "op": {
+          "one_of": [
+            "null"
+          ]
+        },
+        "e": {
+          "expr": true
+        }
+      },
+      "sample": {
+        "op": "null",
+        "e": {
+          "r": "<узел>"
+        }
+      }
+    },
+    "arith": {
+      "keys": {
+        "op": {
+          "one_of": [
+            "%",
+            "*",
+            "**",
+            "+",
+            "-",
+            "/",
+            "//",
+            "abs",
+            "endswith",
+            "if",
+            "integer",
+            "length",
+            "lower",
+            "ltrim",
+            "neg",
+            "real",
+            "replace",
+            "round",
+            "rtrim",
+            "startswith",
+            "text",
+            "trim",
+            "upper"
+          ]
+        },
+        "args": {
+          "exprs": true
+        },
+        "on_zero": {
+          "expr": true,
+          "optional": true
+        }
+      },
+      "sample": {
+        "op": "%",
+        "args": [
+          {
+            "r": "<узел>"
+          },
+          {
+            "r": "<узел>"
+          }
+        ]
+      }
+    },
+    "text": {
+      "keys": {
+        "text": {
+          "text": true
+        }
+      },
+      "sample": {
+        "text": "<текст>"
+      }
+    },
+    "template": {
+      "keys": {
+        "fmt": {
+          "exprs": true
+        }
+      },
+      "sample": {
+        "fmt": [
+          {
+            "r": "<узел>"
+          },
+          {
+            "r": "<узел>"
+          }
+        ]
+      }
+    },
+    "aggregate": {
+      "keys": {
+        "agg": {
+          "one_of": [
+            "count",
+            "exists",
+            "max",
+            "min",
+            "sum"
+          ]
+        },
+        "model": {
+          "name": true
+        },
+        "via": {
+          "name": true,
+          "optional": true
+        },
+        "domain": {
+          "expr": true,
+          "optional": true
+        },
+        "of": {
+          "expr": true,
+          "optional": true
+        },
+        "on_empty": {
+          "expr": true,
+          "optional": true
+        }
+      },
+      "sample": {
+        "agg": "count",
+        "model": "<имя>"
+      }
+    },
+    "order": {
+      "keys": {
+        "order": {
+          "expr": true
+        },
+        "dir": {
+          "one_of": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "sample": {
+        "order": {
+          "r": "<узел>"
+        },
+        "dir": "asc"
+      }
+    }
+  }
+}

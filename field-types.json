@@ -1,0 +1,299 @@
+{
+  "$comment": "Что все языки обязаны знать о полях одинаково. Порождается oneframework.protocol.document(), сторожится tests/test_protocol.py. Руками не править: правка уедет при первой пересборке.",
+  "version": 1,
+  "types": {
+    "binary": {
+      "sql": "TEXT",
+      "widget": "file",
+      "widgets": [
+        "file",
+        "image",
+        "browser"
+      ],
+      "stored": true,
+      "defaults": {
+        "max_size": 5000000
+      }
+    },
+    "boolean": {
+      "sql": "INTEGER",
+      "widget": "checkbox",
+      "widgets": [
+        "checkbox",
+        "toggle"
+      ],
+      "stored": true
+    },
+    "color": {
+      "sql": "TEXT",
+      "widget": "color",
+      "widgets": [
+        "color"
+      ],
+      "stored": true
+    },
+    "date": {
+      "sql": "TEXT",
+      "widget": "calendar",
+      "widgets": [
+        "calendar",
+        "text",
+        "title"
+      ],
+      "stored": true
+    },
+    "datetime": {
+      "sql": "TEXT",
+      "widget": "datetime",
+      "widgets": [
+        "datetime",
+        "text",
+        "title"
+      ],
+      "stored": true
+    },
+    "duration": {
+      "sql": "INTEGER",
+      "widget": "picker",
+      "widgets": [
+        "picker",
+        "number",
+        "stepper"
+      ],
+      "stored": true
+    },
+    "float": {
+      "sql": "REAL",
+      "widget": "number",
+      "widgets": [
+        "number",
+        "unit",
+        "range",
+        "progress",
+        "gauge"
+      ],
+      "stored": true,
+      "defaults": {
+        "digits": [
+          16,
+          2
+        ]
+      }
+    },
+    "geopoint": {
+      "sql": "TEXT",
+      "widget": "location",
+      "widgets": [
+        "location",
+        "text"
+      ],
+      "stored": true
+    },
+    "integer": {
+      "sql": "INTEGER",
+      "widget": "number",
+      "widgets": [
+        "number",
+        "handle",
+        "stepper",
+        "range"
+      ],
+      "stored": true
+    },
+    "json": {
+      "sql": "TEXT",
+      "widget": "textarea",
+      "widgets": [
+        "textarea",
+        "text"
+      ],
+      "stored": true
+    },
+    "many2many": {
+      "sql": null,
+      "widget": "tags",
+      "widgets": [
+        "tags",
+        "list",
+        "chips",
+        "count"
+      ],
+      "stored": false,
+      "defaults": {
+        "stored": false
+      }
+    },
+    "many2one": {
+      "sql": "TEXT",
+      "widget": "select",
+      "widgets": [
+        "select",
+        "tag",
+        "chips",
+        "autocomplete",
+        "inline"
+      ],
+      "stored": true,
+      "defaults": {
+        "ondelete": "set null"
+      }
+    },
+    "monetary": {
+      "sql": "INTEGER",
+      "widget": "monetary",
+      "widgets": [
+        "monetary",
+        "number"
+      ],
+      "stored": true,
+      "defaults": {
+        "currency": "USD",
+        "digits": [
+          16,
+          2
+        ]
+      }
+    },
+    "one2many": {
+      "sql": null,
+      "widget": "tags",
+      "widgets": [
+        "count",
+        "tags"
+      ],
+      "stored": false
+    },
+    "one2one": {
+      "sql": "TEXT",
+      "widget": "select",
+      "widgets": [
+        "select",
+        "tag",
+        "autocomplete"
+      ],
+      "stored": true,
+      "defaults": {
+        "ondelete": "cascade",
+        "unique": true
+      }
+    },
+    "selection": {
+      "sql": "TEXT",
+      "widget": "select",
+      "widgets": [
+        "select",
+        "radio",
+        "segmented",
+        "badge",
+        "chips",
+        "picker",
+        "pill"
+      ],
+      "stored": true
+    },
+    "string": {
+      "sql": "TEXT",
+      "widget": "text",
+      "widgets": [
+        "text",
+        "textarea",
+        "title",
+        "subtitle",
+        "headline",
+        "rich",
+        "email",
+        "phone",
+        "url",
+        "password",
+        "barcode"
+      ],
+      "stored": true,
+      "defaults": {
+        "lines": 1,
+        "semantic": "text"
+      },
+      "semantics": [
+        "text",
+        "email",
+        "phone",
+        "url",
+        "password",
+        "barcode",
+        "rich"
+      ]
+    },
+    "time": {
+      "sql": "TEXT",
+      "widget": "time",
+      "widgets": [
+        "time",
+        "picker",
+        "text",
+        "title"
+      ],
+      "stored": true
+    },
+    "uuid": {
+      "sql": "TEXT",
+      "widget": "text",
+      "widgets": [
+        "text",
+        "title"
+      ],
+      "stored": true,
+      "defaults": {
+        "lines": 1,
+        "semantic": "text"
+      },
+      "semantics": [
+        "text",
+        "email",
+        "phone",
+        "url",
+        "password",
+        "barcode",
+        "rich"
+      ]
+    }
+  },
+  "system_fields": {
+    "id": {
+      "name": "id",
+      "ftype": "uuid",
+      "label": "ID",
+      "lines": 1,
+      "readonly": true,
+      "semantic": "text",
+      "system": true
+    },
+    "hlc": {
+      "name": "hlc",
+      "ftype": "string",
+      "label": "Order stamp",
+      "lines": 1,
+      "readonly": true,
+      "semantic": "text",
+      "system": true
+    },
+    "created_at": {
+      "name": "created_at",
+      "ftype": "datetime",
+      "label": "Created",
+      "readonly": true,
+      "system": true
+    },
+    "updated_at": {
+      "name": "updated_at",
+      "ftype": "datetime",
+      "label": "Updated",
+      "readonly": true,
+      "system": true
+    }
+  },
+  "system_field_order": [
+    "id",
+    "hlc",
+    "created_at",
+    "updated_at"
+  ]
+}

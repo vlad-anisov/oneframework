@@ -1,0 +1,415 @@
+{
+  "$comment": "Сгенерировано из живых рантаймов и закреплено тестами tests/test_wire.py.",
+  "version": "1.0",
+  "snapshot": {
+    "required": [
+      "active",
+      "depth",
+      "screens",
+      "stacks",
+      "type"
+    ]
+  },
+  "frame": {
+    "required": [
+      "children",
+      "crumbs",
+      "dismiss",
+      "draft",
+      "error",
+      "id",
+      "model",
+      "name",
+      "record_id",
+      "target",
+      "title",
+      "view"
+    ],
+    "optional": [
+      "navbar_buttons"
+    ]
+  },
+  "nodes": {
+    "accordion": {
+      "required": [
+        "children",
+        "id",
+        "label",
+        "open",
+        "type"
+      ],
+      "optional": []
+    },
+    "button": {
+      "required": [
+        "action",
+        "enabled",
+        "icon",
+        "id",
+        "label",
+        "style",
+        "type",
+        "visible"
+      ],
+      "optional": [
+        "bind",
+        "context",
+        "place"
+      ]
+    },
+    "col": {
+      "required": [
+        "children",
+        "id",
+        "span",
+        "type"
+      ],
+      "optional": []
+    },
+    "field": {
+      "required": [
+        "ftype",
+        "id",
+        "label",
+        "name",
+        "options",
+        "place",
+        "placeholder",
+        "readonly",
+        "required",
+        "scope",
+        "type",
+        "visible",
+        "widget"
+      ],
+      "optional": [
+        "bind",
+        "choices",
+        "comodel",
+        "model",
+        "record_id",
+        "related",
+        "screen_id",
+        "unset",
+        "value"
+      ]
+    },
+    "group": {
+      "required": [
+        "children",
+        "cols",
+        "id",
+        "label",
+        "surface",
+        "type"
+      ],
+      "optional": []
+    },
+    "icon": {
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "optional": []
+    },
+    "list": {
+      "required": [
+        "columns",
+        "display",
+        "handle_field",
+        "handle_hidden",
+        "id",
+        "index",
+        "item",
+        "model",
+        "model_label",
+        "open",
+        "own_columns",
+        "page_size",
+        "row_height",
+        "search",
+        "swipe_delete",
+        "type"
+      ],
+      "optional": [
+        "count",
+        "empty",
+        "has_more",
+        "label",
+        "limit",
+        "menu",
+        "pane",
+        "reorderable",
+        "row",
+        "rows",
+        "screen_id",
+        "state",
+        "swipe_label"
+      ]
+    },
+    "menu": {
+      "required": [
+        "children",
+        "icon",
+        "id",
+        "place",
+        "type"
+      ],
+      "optional": []
+    },
+    "pill": {
+      "required": [
+        "id",
+        "type",
+        "value",
+        "when"
+      ],
+      "optional": []
+    },
+    "row": {
+      "required": [
+        "children",
+        "id",
+        "type"
+      ],
+      "optional": []
+    },
+    "section": {
+      "required": [
+        "id",
+        "subtitle",
+        "title",
+        "type"
+      ],
+      "optional": []
+    },
+    "tab": {
+      "required": [
+        "children",
+        "fab",
+        "id",
+        "label",
+        "title",
+        "type"
+      ],
+      "optional": [
+        "active",
+        "badge",
+        "record_id"
+      ]
+    },
+    "tabs": {
+      "required": [
+        "children",
+        "id",
+        "page",
+        "type"
+      ],
+      "optional": [
+        "source"
+      ]
+    },
+    "text": {
+      "required": [
+        "id",
+        "type",
+        "value"
+      ],
+      "optional": []
+    },
+    "view": {
+      "required": [
+        "children",
+        "model",
+        "name",
+        "type"
+      ],
+      "optional": []
+    }
+  },
+  "rowTemplate": {
+    "required": [
+      "cells",
+      "children",
+      "openable"
+    ],
+    "optional": [],
+    "$comment": [
+      "list.row -- описание строки, одно на весь список.",
+      "Это обычные узлы, но без ответов, которые принадлежат записи: на месте",
+      "такого ответа стоит null, а узел называет гнездо -- \"bind\": {\"value\": 3}.",
+      "Ключ записи гнезда не занимает: рендерер подставляет record_id полю и",
+      "context.record_id кнопке из id самой строки.",
+      "'related' у many2one тоже не едет: 'choices' стоит здесь один раз на",
+      "список, и значение указывает в него.",
+      "'cells' -- узлы columns=(...) там, где таблица показывает свои колонки, а",
+      "не ячейки строки; иначе null."
+    ]
+  },
+  "listRow": {
+    "required": [
+      "id",
+      "v"
+    ],
+    "optional": [],
+    "$comment": [
+      "Запись внутри list.rows. У неё нет поля type: это не узел, а строка.",
+      "'v' -- вектор значений по гнёздам list.row, в порядке номеров."
+    ]
+  },
+  "actions": {
+    "switch_screen": {
+      "required": [
+        "key"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "показать другой раздел"
+    },
+    "back": {
+      "required": [],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "снять верхний кадр стека раздела"
+    },
+    "back_to": {
+      "required": [
+        "screen_id"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "вернуться на уровень: снять всё, что лежит поверх названного кадра"
+    },
+    "goto": {
+      "required": [
+        "screen"
+      ],
+      "optional": [
+        "path"
+      ],
+      "sender": "renderer",
+      "doc": "прийти по адресу: раздел и путь «вид -- запись» на кадр"
+    },
+    "open": {
+      "required": [
+        "list_id",
+        "record_id"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "открыть запись списка"
+    },
+    "write": {
+      "required": [
+        "model",
+        "record_id",
+        "values"
+      ],
+      "optional": [
+        "screen_id"
+      ],
+      "sender": "renderer",
+      "doc": "записать поля",
+      "$comment": [
+        "`screen_id` -- экран, чей черновик правят. Нужен ровно тогда, когда",
+        "`record_id` пришёл пустым: строки ещё нет, и значение уходит в",
+        "черновик того кадра, а не верхнего. Без него рантайм берёт верхний",
+        "кадр -- поэтому ключ и необязательный, а не обязательный."
+      ]
+    },
+    "set_state": {
+      "required": [
+        "screen_id",
+        "field",
+        "value"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "поле экрана, не записи"
+    },
+    "action": {
+      "required": [
+        "button_id",
+        "context"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "выполнить действие кнопки"
+    },
+    "set_search": {
+      "required": [
+        "list_id",
+        "value"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "строка поиска",
+      "$comment": [
+        "Ключ называется `value`, а не `text`: `text` -- имя того же поиска в",
+        "снимке (`list.state.text`), и оно сюда переползло по сходству.",
+        "Отправитель слал `value`, оба рантайма читали `value`, а схема обещала",
+        "`text` -- разойтись это могло только молча, потому что кадр с чужим",
+        "именем ключа разбирался как «поиск сброшен»."
+      ]
+    },
+    "set_filter": {
+      "required": [
+        "list_id",
+        "index"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "индекс фильтра или null"
+    },
+    "set_sort": {
+      "required": [
+        "list_id",
+        "index"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "индекс сортировки"
+    },
+    "load_more": {
+      "required": [
+        "list_id"
+      ],
+      "optional": [],
+      "sender": "renderer",
+      "doc": "следующая страница"
+    },
+    "reorder": {
+      "required": [
+        "list_id",
+        "record_id",
+        "to"
+      ],
+      "optional": [
+        "from"
+      ],
+      "sender": "renderer",
+      "doc": "перестановка вручную",
+      "$comment": [
+        "`from` -- откуда строку взяли. Едет, но не читается ни одним рантаймом:",
+        "место, откуда запись ушла, оба ищут по её ключу, а не по номеру, и",
+        "верят они ключу, а не отправителю. Объявлен здесь потому, что по",
+        "проводу он всё-таки едет, а неназванный ключ на проводе -- ровно то,",
+        "что эта схема обязана исключать."
+      ]
+    },
+    "probe": {
+      "required": [],
+      "optional": [],
+      "sender": "host",
+      "doc": "прочитать текущий кадр, ничего не меняя",
+      "$comment": [
+        "Единственное действие, которое шлёт не рендерер, а хост -- тот, кто",
+        "держит рантайм. Им берут нулевой кадр проверки провода",
+        "(`tests/test_wire.py`): снимок нужен до всякого события, а",
+        "спросить его событием, которое ничего не меняет, честнее, чем завести",
+        "для этого второй ход в обход провода."
+      ]
+    }
+  }
+}

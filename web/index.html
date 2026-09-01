@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- Framework7 puts the `md`/`ios` class on this element itself, from the
+     theme inlined by Vite (see App(theme=...) and vite.config.js). -->
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover, user-scalable=no"
+    />
+    <!-- Значение ставит main.js из переменной темы Framework7, чтобы строка
+         состояния совпадала с фоном страницы в любой теме и при любом color=. -->
+    <meta name="theme-color" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>oneframework</title>
+    <style>
+      /*
+       * Потолок ширины содержимого -- и по центру своей панели.
+       *
+       * Так говорят оба гайдлайна. У Apple под это есть готовый механизм --
+       * `readableContentGuide` в UIKit: он ограничивает длину строки ради
+       * читаемости. У Material -- классы размеров окна и канонические
+       * раскладки, где содержимое панели не растягивают. Настройки на iPad и
+       * на планшете с Android выглядят одинаково: столбец посередине, а не
+       * прижатый к краю.
+       *
+       * 720px -- это 45--75 знаков в строке при нашем кегле. У Bootstrap
+       * `.container` доходит до 1140--1320px, но он про многоколоночные
+       * страницы; у нас столбец полей, ему нужно меньше.
+       *
+       * `:is(...)` -- не украшение, а необходимость: `.list.inset` у
+       * Framework7 сам ставит горизонтальные отступы, и при равной
+       * специфичности побеждал по порядку подключения. Из-за этого содержимое
+       * и прижималось влево, хотя `margin: auto` стоял.
+       *
+       * Список слева не трогаем: у него свой потолок от Framework7 --
+       * `--f7-page-master-width`, 320px, и он совпадает с советом Material для
+       * панели списка.
+       */
+      :root { --pa-content-max-width: 720px; }
+
+      .page-content .pa-field:is(.list, .block, div),
+      .page-content .pa-row:is(.list, .block, div),
+      .page-content .pa-section:is(.block, div),
+      .page-content .pa-btn:is(.button, a) {
+        max-width: var(--pa-content-max-width);
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .page-master .pa-field:is(.list, .block, div),
+      .page-master .pa-row:is(.list, .block, div),
+      .page-master .pa-btn:is(.button, a) { max-width: none; }
+
+      /*
+       * Плавающая кнопка на iOS -- полупрозрачная, как у Apple.
+       *
+       * Framework7 9.1.2 вешает на неё `backdrop-filter` всегда, но фон делает
+       * полупрозрачным только в тёмной схеме; в светлой стоит сплошной цвет, и
+       * размывать за ним нечего. Здесь светлая доводится до того же -- его же
+       * приёмом и его же переменной. 70%, а не 50% как у F7 в тёмной: глиф
+       * белый, и на светлой странице половина дала бы контраст ниже 3:1.
+       */
+      .ios:not(.dark) {
+        --f7-fab-bg-color: color-mix(in oklab, var(--f7-theme-color) 70%, transparent);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Пусто: рамку приложения рисует React, а Framework7 заводится на
+         элементе, который он же и создаёт. -->
+    <div id="app"></div>
+
+    <script type="module" src="./src/main.jsx"></script>
+  </body>
+</html>
