@@ -25,14 +25,23 @@ from pathlib import Path
 
 import pytest
 
+from conftest import needs_kotlin, needs_node
+
 from oneframework.declaration import declare
 from oneframework.protocol import TABLE_PATH
 
 ROOT = Path(__file__).resolve().parents[1]
-СБОРЩИК_TEAVM = ROOT / "src" / "build" / "teavm.mjs"
+СБОРЩИК_TEAVM = ROOT / "libs" / "js" / "src" / "build" / "teavm.mjs"
 PYTHON_APP = ROOT / "examples" / "notes-python" / "app.py"
 JS_APP = ROOT / "examples" / "notes-js" / "app.mjs"
 KOTLIN_APP = ROOT / "examples" / "notes-kotlin" / "App.kt"
+
+#: Второе приложение тройки, и оно не пример, а **образец**: тройка `notes-*`
+#: задевает четыре рода узлов из семнадцати, и всё остальное у двух привязок из
+#: трёх было не сверено ни с чем. Этот задевает каждый.
+PARITY_PY = ROOT / "tests" / "fixtures" / "parity_app.py"
+PARITY_JS = ROOT / "tests" / "fixtures" / "parity_app.mjs"
+PARITY_KT = ROOT / "tests" / "fixtures" / "ParityApp.kt"
 
 #: Копии таблицы типов, разъехавшиеся с образцом, -- первая причина, по которой
 #: языки могли бы разойтись молча.
@@ -102,7 +111,7 @@ def kotlin_bundle():
 
     if not спросить():
         pytest.skip("компилятора Kotlin нет: KOTLIN_HOME не указан")
-    # Печатает пакет **ядро** (`src/build/kotlin.mjs`): питоновской
+    # Печатает пакет **ядро** (`libs/js/src/build/kotlin.mjs`): питоновской
     # привязки Kotlin больше нет. Дорога та же, которой ходит сборка.
     from oneframework.cli.sources import from_kotlin
 
@@ -139,6 +148,48 @@ def test_javascript_declares_the_same_documents_as_python():
 
 def test_kotlin_declares_the_same_documents_as_python():
     assert fingerprints(python_bundle()) == fingerprints(kotlin_bundle())
+
+
+def _богатый_питон():
+    import sys
+
+    if str(PARITY_PY.parent) not in sys.path:
+        sys.path.insert(0, str(PARITY_PY.parent))
+    import parity_app
+
+    from oneframework.model import defs
+
+    пакет = declare(parity_app.app)
+    assert not getattr(defs, "SKIPPED", {}), defs.SKIPPED
+    return пакет
+
+
+def _богатый(язык, путь):
+    from oneframework.cli.sources import from_javascript, from_kotlin
+
+    return (from_javascript if язык == "js" else from_kotlin)(путь).doc
+
+
+@needs_node
+def test_the_rich_app_is_the_same_on_javascript():
+    """Богатый образец, а не тройка `notes-*`.
+
+    Тройка задевает четыре рода узлов из семнадцати: модель, строку, карточку,
+    кнопку. Всё остальное -- вкладки, повторитель, поиск, счётчики, меню,
+    складной блок -- у двух привязок из трёх не сверялось ни с чем и могло
+    разойтись молча. Первый прогон этой сверки нашёл четыре расхождения.
+    """
+    assert fingerprints(_богатый_питон()) == fingerprints(_богатый("js", PARITY_JS))
+
+
+@needs_kotlin
+def test_the_rich_app_is_the_same_on_kotlin():
+    """То же для Kotlin -- и это половина, которой у него не было вовсе.
+
+    До 02.09.2026 привязка Kotlin объявляла три рода узлов из семнадцати, и
+    сверять её на богатом приложении было нечем: его нельзя было написать.
+    """
+    assert fingerprints(_богатый_питон()) == fingerprints(_богатый("kt", PARITY_KT))
 
 
 def test_the_check_can_fail(tmp_path, monkeypatch):
@@ -297,7 +348,7 @@ def test_javascript_logic_can_use_an_npm_package():
         pytest.skip("node на этой машине нет")
     файл = ROOT / "examples" / "notes-js" / "logic" / "summary.js"
     скрипт = f"""
-      const {{ action }} = await import({json.dumps(str(ROOT / 'src/device.mjs'))});
+      const {{ action }} = await import({json.dumps(str(ROOT / 'libs/js/src/device.mjs'))});
       const a = action(new URL("file://{файл}"));
       a.bind({{ name: "Note", fields: new Map([["title", 1], ["details", 1]]) }}, "summary");
       const src = a.declaration().js.source;

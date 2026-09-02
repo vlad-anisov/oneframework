@@ -10,7 +10,7 @@
  * число, а не впечатление от чтения трёх файлов подряд.
  */
 
-import { Bool, Cmp, Not, Order, Ref, toJson } from "../../src/expr.mjs";
+import { Bool, Cmp, Not, Order, Ref, toJson } from "../../../oneframework-js/src/expr.mjs";
 
 let raw = "";
 process.stdin.setEncoding("utf8");

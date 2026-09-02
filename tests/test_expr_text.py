@@ -7,7 +7,7 @@
 привязке. Хуже другое: ``Expr.kt`` покрывает семь родов узлов из четырнадцати,
 и на Kotlin нельзя объявить ни арифметику, ни свёртку по набору.
 
-Разборщик один, в ядре (`src/build/exprtext.mjs`). Привязке довольно
+Разборщик один, в ядре (`libs/js/src/build/exprtext.mjs`). Привязке довольно
 передать строку -- дерево соберёт ядро.
 
 Сверять есть с чем, и это главное: питоновский DSL строит те же деревья уже
@@ -29,7 +29,7 @@ from oneframework.model.expr import record, view
 from oneframework.model.exprjson import to_json
 
 ROOT = Path(__file__).resolve().parents[1]
-РАЗБОРЩИК = ROOT / "src" / "build" / "exprtext.mjs"
+РАЗБОРЩИК = ROOT / "libs" / "js" / "src" / "build" / "exprtext.mjs"
 
 pytestmark = needs_node
 

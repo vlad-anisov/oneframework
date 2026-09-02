@@ -1,7 +1,7 @@
 """Приведение значения обязано значить одно и то же во всех рантаймах.
 
 Сторон теперь **три**: питон (`oneframework/model/fields.py`), JS
-(`src/runtime/fields.js`) и модуль (`core-db/src/fields.rs`). Все они пишут
+(`libs/js/src/core/runtime/fields.js`) и модуль (`core-db/src/fields.rs`). Все они пишут
 в одну базу и обмениваются одними changeset-ами, поэтому `to_db` обязан давать
 не «эквивалентное», а одно и то же значение. Расхождение здесь тихое: не
 исключение, а неверно показанное число -- цена, разошедшаяся на копейку, дата,
@@ -36,7 +36,7 @@ from oneframework.model.meta import Model, ModelMeta
 from oneframework.model.schema import model_schema, type_schema
 
 ROOT = Path(__file__).resolve().parents[1]
-FIELDS_JS = ROOT / "src" / "core" / "runtime" / "fields.js"
+FIELDS_JS = ROOT / "libs" / "js" / "src" / "core" / "runtime" / "fields.js"
 
 #: Значение, которого не получилось: питон на «int("")» падает, и JS обязан
 #: отказать тоже. Сравнивается только сам факт отказа -- набор исключений у

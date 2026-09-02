@@ -1,10 +1,12 @@
-"""Вид как документ: шаблон, данные, дерево.
+"""Вид как документ -- со стороны **объявления**.
 
-Проверяется ровно та граница, ради которой всё это затевалось. Документ не
-знает ни одной записи: имена в нём ссылки, условия -- выражения, повторитель --
-узел. Дерево знает всё: строки сложены, агрегаты посчитаны, вкладок столько,
-сколько списков в базе. Между ними -- разворот, и он единственное место, где
-данные встречаются с шаблоном.
+Документ не знает ни одной записи: имена в нём ссылки, условия -- выражения,
+повторитель -- узел. Здесь проверяется, что привязка кладёт в него именно это,
+и как разбирается шаблон.
+
+Другая половина той же границы -- разворот, где документ встречается с
+данными, -- исполняется рантаймом устройства, и проверяется она там:
+`tests/js/expand.test.mjs`.
 """
 
 import json
@@ -20,9 +22,7 @@ from oneframework.model.expr import Expr, Ref, Template, item, iter_refs, parse_
 from oneframework.model.exprjson import from_json, to_json
 from oneframework.ui.view import document
 
-from jsrt import Рантайм, needs_node
 
-pytestmark = needs_node
 
 
 class Board(Model):
@@ -80,48 +80,6 @@ class Boards(View):
                 ),
             ),
         )
-
-
-@pytest.fixture()
-def runtime():
-    app = App(Boards, title="Развороты")
-
-    def seed(database):
-        work = database.create(Board, {"name": "Работа"})
-        home = database.create(Board, {"name": "Дом"})
-        database.create(Task, {"title": "Отчёт", "board": work})
-        database.create(Task, {"title": "Созвон", "board": work, "done": True})
-        database.create(Task, {"title": "Молоко", "board": home})
-
-    #: Посев исполняет питон при выкладке -- он и есть язык объявления. Дальше
-    #: база живёт **у хоста**: правки идут туда, и спрашивать про них
-    #: питоновскую копию было бы тише всего и неверно.
-    rt = Рантайм(app, seed=seed)
-    yield rt
-    rt.close()
-
-
-def tabs_of(runtime):
-    tree = runtime.stack[-1].tree
-    return next(c for c in tree["children"] if c["type"] == "tabs")["children"]
-
-
-def list_of(tab):
-    return next(c for c in tab["children"] if c["type"] == "list")
-
-
-def titles_of(tab):
-    from conftest import bound_rows
-
-    def cells(nodes):
-        for node in nodes:
-            yield node
-            yield from cells(node.get("children") or ())
-
-    return [
-        next(n for n in cells(row["children"]) if n.get("name") == "title")["value"]
-        for row in bound_rows(list_of(tab))
-    ]
 
 
 # ------------------------------------------------------------------ шаблоны
@@ -182,108 +140,6 @@ def test_the_document_lands_in_the_database_beside_the_data():
     план = build_plan(_пакетом(App(Boards, title="Развороты")))
     поедет = {и: д for в, и, д in план["defs"] if в == "view"}
     assert поедет.get("Boards") == document(Boards)
-
-
-# ------------------------------------------------------------------ разворот
-def test_the_repeat_becomes_one_tab_per_record(runtime):
-    assert [t["label"] for t in tabs_of(runtime)] == ["Работа", "Дом"]
-
-
-def test_a_board_added_later_gets_its_tab(runtime):
-    """То, ради чего повторитель и нужен: структура следует за данными."""
-    runtime.db.create(Board, {"name": "Отпуск"})
-    runtime.touch(Board)
-    assert [t["label"] for t in tabs_of(runtime)] == ["Работа", "Дом", "Отпуск"]
-
-
-def test_each_copy_filters_on_its_own_record(runtime):
-    work, home = tabs_of(runtime)
-    assert titles_of(work) == ["Отчёт"]
-    assert titles_of(home) == ["Молоко"]
-
-
-def test_ids_stay_unique_across_the_copies(runtime):
-    ids = [t["id"] for t in tabs_of(runtime)]
-    assert len(ids) == len(set(ids))
-
-
-def test_a_condition_the_data_answers_decides_whether_the_node_exists(runtime):
-    """`visible=Exists(...)` -- это питоновский `if`, сказанный как условие."""
-    work, home = tabs_of(runtime)
-    assert [c["type"] for c in work["children"]] == ["list", "accordion"]
-    assert [c["type"] for c in home["children"]] == ["list"]
-
-
-def test_enabled_follows_the_data_too(runtime):
-    work, home = tabs_of(runtime)
-    assert list_of(work)["menu"]["children"][0]["enabled"] is True
-    assert list_of(home)["menu"]["children"][0]["enabled"] is False
-
-
-def test_the_question_names_the_record_it_is_about(runtime):
-    button = list_of(tabs_of(runtime)[0])["menu"]["children"][0]
-    assert button["action"]["confirm"] == "Удалить всё выполненное в «Работа»?"
-
-
-def test_a_count_is_data_and_follows_it(runtime):
-    counts = [t["title"][-1]["value"] for t in tabs_of(runtime)]
-    assert counts == ["1", "1"]
-    runtime.db.create(Task, {"title": "Ещё", "board": runtime.db.all(Board)[0]["id"]})
-    runtime.touch(Task)
-    assert [t["title"][-1]["value"] for t in tabs_of(runtime)] == ["2", "1"]
-
-
-def test_nothing_unanswered_reaches_the_renderer(runtime):
-    """Развёрнутое дерево не несёт ни одного вопроса -- ни в меню, ни в строке."""
-    def every(node):
-        yield node
-        for value in node.values():
-            if isinstance(value, list):
-                for child in value:
-                    if isinstance(child, dict):
-                        yield from every(child)
-            elif isinstance(value, dict) and "type" in value:
-                yield from every(value)
-
-    seen = 0
-    for node in every(runtime.stack[-1].tree):
-        for key in ("visible", "enabled", "value", "label", "confirm"):
-            assert not isinstance(node.get(key), dict), \
-                f"{node.get('type')}.{key}: {node[key]!r}"
-        seen += 1
-    assert seen > 20                            # дерево и правда обошли
-
-
-def test_deleting_by_domain_removes_what_is_there_when_it_is_pressed(runtime):
-    """Список номеров снимается при сборке экрана; домен -- при нажатии."""
-    button = list_of(tabs_of(runtime)[0])["menu"]["children"][0]
-    board = runtime.db.all(Board)[0]["id"]
-    # Ещё одна выполненная задача появляется уже после того, как экран нарисован.
-    runtime.db.create(Task, {"title": "Поздняя", "board": board, "done": True})
-
-    runtime.dispatch({"type": "action", "button_id": button["id"],
-                      "context": button["context"]})
-    left = [t["title"] for t in runtime.db.all(Task) if t["board"] == board]
-    assert left == ["Отчёт"]
-
-# --------------------------------------------------------------- копия тела
-# Повторитель копирует тело по разу на запись. До 21.08.2026 здесь стояли две
-# проверки на внутренности питоновского `_clone`: что копия ничего не делит с
-# оригиналом из того, что правит, и НЕ заводит второго экземпляра того, что
-# только читает (деревьев условий и полей модели). Второе было замером: общий
-# `deepcopy` съедал 66% всего разворота самого тяжёлого вида.
-#
-# На устройстве копия делается `structuredClone` -- полная, включая деревья
-# условий. И это не недосмотр: там копируется **JSON**, а не живые объекты, и
-# номера узлов правятся на месте (`value.id = ...`), так что общий объект
-# испортил бы оригинал. То есть правило «делить читаемое» питоновское по
-# природе и на JS неверно -- переносить его было бы неправдой.
-#
-# Первое правило -- «копии не пишут друг поверх друга» -- никуда не делось, но
-# проверяется по следствию, а не по адресам объектов:
-# `test_each_copy_filters_on_its_own_record` (каждая вкладка отбирает по своей
-# записи) и `test_ids_stay_unique_across_the_copies` (номера не сталкиваются).
-# Поделись копии изменяемым -- обе покраснеют.
 
 
 def _пакетом(app, seed=None):

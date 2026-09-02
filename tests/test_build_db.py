@@ -1,11 +1,11 @@
 """Базу приложения пишет тот же код, что стоит на устройстве.
 
 Писали двое: сборка на питоне (`model/storage.py`) и устройство на JavaScript
-(`src/runtime/db.js`). Формат один, реализации две -- расхождение видно
+(`libs/js/src/core/runtime/db.js`). Формат один, реализации две -- расхождение видно
 только на обмене, у пользователя.
 
 С 21.08.2026 пишет один. Питон говорит, что класть (`cli/plan.py`), кладёт
-`src/build-db.mjs`.
+`libs/js/src/build-db.mjs`.
 
 Пока питоновский писатель был в дереве, здесь стояла сверка двух баз побайтно.
 Она своё отработала -- переезд был сделан под ней, и два расхождения (пустая
@@ -29,7 +29,7 @@ from conftest import needs_node
 from oneframework import App, Model, Screen, String, View
 
 ROOT = Path(__file__).resolve().parents[1]
-СБОРЩИК = ROOT / "src" / "build-db.mjs"
+СБОРЩИК = ROOT / "libs" / "js" / "src" / "build-db.mjs"
 
 pytestmark = needs_node
 

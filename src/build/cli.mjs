@@ -1,7 +1,7 @@
 /**
  * Точка входа сборщика: пакет объявления -> собранное приложение.
  *
- *     node libs/js/src/build/cli.mjs web <пакет.json|App.kt> [--root <куда>]
+ *     node src/build/cli.mjs web <пакет.json|App.kt> [--root <куда>]
  *                                       [--extra <файл.json>] [--dev] [--port N]
  *
  * Языка приложения отсюда почти не видно: приезжает пакет, а чем он напечатан

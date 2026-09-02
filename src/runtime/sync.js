@@ -152,7 +152,7 @@ export class SessionApi {
    *
    * Было парой к `split_guarded` в `oneframework/server.py` (удалён). Второго
    * прохода -- пересборки очищенного блоба -- здесь нет, и это разница, а не
-   * недоделка: см. `src/server.mjs`.
+   * недоделка: см. `libs/js/src/server.mjs`.
    */
   tablesOf(blob) {
     const { capi, wasm } = this;

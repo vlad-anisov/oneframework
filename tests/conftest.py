@@ -121,13 +121,13 @@ def titles(runtime):
 
 
 #: Спрашивать про Kotlin надо у **ядра**: там живёт единственная реализация
-#: поиска компилятора и кэша TeaVM (`src/build/`). Питоновские
+#: поиска компилятора и кэша TeaVM (`libs/js/src/build/`). Питоновские
 #: Питоновские `cli/kotlin_app.py` и `cli/teavm.py` удалены 21.08.2026: под
 #: конец они держались только ради этих двух вопросов -- и были второй копией
 #: поиска, которая один раз уже разошлась с настоящей (раскладка Homebrew) и
 #: промахивалась молча.
-_ЯДРО_KOTLIN = ROOT / "src" / "build" / "kotlin.mjs"
-_ЯДРО_TEAVM = ROOT / "src" / "build" / "teavm.mjs"
+_ЯДРО_KOTLIN = ROOT / "libs" / "js" / "src" / "build" / "kotlin.mjs"
+_ЯДРО_TEAVM = ROOT / "libs" / "js" / "src" / "build" / "teavm.mjs"
 _ОСНАСТКА = {}
 
 
@@ -185,7 +185,7 @@ def план(пакет):
     скрипт = (
         "import { readFileSync } from 'node:fs';\n"
         "import { buildPlan } from " + json.dumps(str(
-            ROOT / "src" / "build" / "plan.mjs")) + ";\n"
+            ROOT / "libs" / "js" / "src" / "build" / "plan.mjs")) + ";\n"
         "process.stdout.write(JSON.stringify("
         "buildPlan(JSON.parse(readFileSync(process.argv[1], 'utf8')))));"
     )

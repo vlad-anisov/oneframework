@@ -202,7 +202,7 @@ def kotlin_ready():
 def kotlin_bundle():
     if not kotlin_ready():
         pytest.skip("компилятора Kotlin нет: KOTLIN_HOME не указан")
-    # Печатает пакет **ядро** (`src/build/kotlin.mjs`): питоновской
+    # Печатает пакет **ядро** (`libs/js/src/build/kotlin.mjs`): питоновской
     # привязки Kotlin больше нет. Дорога та же, которой ходит сборка.
     from oneframework.cli.sources import from_kotlin
 

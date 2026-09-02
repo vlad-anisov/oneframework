@@ -19,11 +19,11 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 import sqlite3InitModule from "@sqlite.org/sqlite-wasm";
 
-import { Database } from "./runtime/db.js";
-import { ensureTable, put } from "./runtime/defs.js";
-import { makeModels } from "./runtime/fields.js";
-import { LOGIC_TABLE, ensureTable as ensureLogicTable } from "./runtime/logic.js";
-import { PUBLISHER_META } from "./runtime/keys.js";
+import { Database } from "./core/runtime/db.js";
+import { ensureTable, put } from "./core/runtime/defs.js";
+import { makeModels } from "./core/runtime/fields.js";
+import { LOGIC_TABLE, ensureTable as ensureLogicTable } from "./core/runtime/logic.js";
+import { PUBLISHER_META } from "./core/runtime/keys.js";
 import { buildPlan } from "./build/plan.mjs";
 
 const вход = JSON.parse(await new Promise((готово) => {

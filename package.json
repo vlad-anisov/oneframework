@@ -1,25 +1,20 @@
 {
-  "name": "@oneframework/core",
-  "version": "0.1.0",
-  "description": "One Framework -- ядро: договор, сборщик и рантайм",
-  "type": "module",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vlad-anisov/oneframework.git"
+  "name": "oneframework-workspace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
   },
-  "files": [
-    "protocol",
-    "src",
-    "web",
-    "field-types.json",
-    "vite.config.js",
-    "capacitor.config.json",
-    "README.md"
-  ],
   "scripts": {
-    "test:e2e": "playwright test"
+    "test": "node --test 'tests/js/**/*.test.mjs'"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "private": "true",
   "dependencies": {
     "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.5.0",
@@ -31,6 +26,8 @@
     "framework7-react": "^9.1.2",
     "lodash": "^4.18.1",
     "material-icons": "^1.13.14",
+    "oneframework": "file:libs/js",
+    "pyodide": "^314.0.5",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "vite": "^8.2.1"

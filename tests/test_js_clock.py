@@ -32,8 +32,8 @@ from conftest import needs_node, run_node
 from oneframework.model.ids import is_id, new_id
 
 ROOT = Path(__file__).resolve().parents[1]
-IDS_JS = ROOT / "src" / "core" / "runtime" / "ids.js"
-HLC_JS = ROOT / "src" / "core" / "runtime" / "hlc.js"
+IDS_JS = ROOT / "libs" / "js" / "src" / "core" / "runtime" / "ids.js"
+HLC_JS = ROOT / "libs" / "js" / "src" / "core" / "runtime" / "hlc.js"
 
 HOW_MANY = 10_000
 

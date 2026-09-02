@@ -22,6 +22,8 @@ import {
   AccordionContent, BlockTitle, List, ListIndex, ListItem, Searchbar, Tab, Tabs, Toolbar,
 } from "framework7-react";
 
+import { bindRow } from "./bindrow.js";
+export { bindRow };
 import { Glyph } from "./glyph.jsx";
 import {
   assertEveryTypeIsDrawn, ErrorBox, node, registerNode, РИСУЕТ_РОДИТЕЛЬ,
@@ -34,7 +36,7 @@ const cssId = (id) => String(id).replace(/[^\w-]/g, "_");
 
 /**
  * Типы узлов, которые рисует этот истолкователь -- его половина договора из
- * `protocol/wire.json`, которую `tests/test_wire.py` держит по схеме.
+ * `protocol/wire.json`, которую `tests/js/wire.test.mjs` держит по схеме.
  */
 /* -------------------------------------------------------------------- field */
 
@@ -522,50 +524,6 @@ const WINDOW_THRESHOLD = 40;
  */
 const ROW_HEIGHT = 52;
 const OVERSCAN = 8;
-
-/**
- * Одна запись как строка, которую рисует истолкователь: описание строки списка,
- * в которое подставлены ответы этой записи.
- *
- * Вторая половина формы, которую задаёт `protocol/wire.json`. Список везёт одно
- * описание своей строки -- узлы, их ключи, их подписи, весь словарь связи -- и
- * по вектору ответов на запись. Сводит их эта функция, и делает это *после*
- * окна, поэтому список из десяти тысяч записей строит те тридцать строк,
- * которые на экране, и ни одной сверх.
- *
- * Собственный ключ записи -- не слот: всякая ячейка строки принадлежит одной и
- * той же записи, поэтому он подставляется здесь, а не повторяется в каждом
- * векторе. Не слот и `related` у many2one -- варианты стоят на узле один раз, а
- * значение указывает внутрь них.
- */
-export function bindRow(template, row) {
-  const values = row.v;
-  const bind = (n) => {
-    const out = { ...n };
-    const slots = out.bind;
-    if (slots) delete out.bind;
-    if (out.children) out.children = out.children.map(bind);
-    if (slots) for (const [key, index] of Object.entries(slots)) out[key] = values[index];
-    if (out.type === "field") {
-      if (out.scope === "record") {
-        out.record_id = row.id;
-        if (out.ftype === "many2one" || out.ftype === "one2one") {
-          out.related = (out.choices || []).find((c) => c.id === out.value) ?? null;
-        }
-      }
-    } else if (out.type === "button") {
-      out.context = { ...out.context, record_id: row.id };
-    }
-    return out;
-  };
-  const entry = {
-    id: row.id,
-    openable: template.openable,
-    children: template.children.map(bind),
-  };
-  if (template.cells) entry.cells = template.cells.map(bind);
-  return entry;
-}
 
 /** Только те строки, которые читателю видны: срез и две распорки. */
 function windowOf(rows, ctx, rowHeight) {

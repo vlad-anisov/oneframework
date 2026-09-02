@@ -21,7 +21,7 @@ import { existsSync, readFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { isDeclarative } from "../rel/action.js";
+import { isDeclarative } from "../core/rel/action.js";
 import { parseExpr } from "./exprtext.mjs";
 
 /** Переменная, из которой сборка узнаёт ключ издателя. */
