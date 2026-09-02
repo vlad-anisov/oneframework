@@ -166,7 +166,7 @@ export async function поднятьФайл(файл, экраны) {
  */
 export async function подопытноеTodo() {
   const { declare } = await import("../../../oneframework-js/index.mjs");
-  const { application } = await import("../../../oneframework-js/examples/todo-js/app.mjs");
+  const { application } = await import("../../../oneframework-examples/todo-js/app.mjs");
   const пакет = declare(application);
   const тег = (н) => `0192f000-0000-7000-8000-00000000t${String(н).padStart(3, "0")}`;
   const строка = (н) => `0192f000-0000-7000-8000-00000000l${String(н).padStart(3, "0")}`;

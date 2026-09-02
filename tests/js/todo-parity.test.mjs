@@ -40,7 +40,7 @@ function отпечатки(пакет) {
 
 const наJS = async () => {
   const { declare } = await import("../../../oneframework-js/index.mjs");
-  const { application } = await import("../../../oneframework-js/examples/todo-js/app.mjs");
+  const { application } = await import("../../../oneframework-examples/todo-js/app.mjs");
   return declare(application);
 };
 

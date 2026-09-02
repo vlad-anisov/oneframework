@@ -712,7 +712,6 @@ const ОБЕЩАЮТ_СТОРОЖА = [
   "docs/custom-code.md",
   "tests/test_document.py",
   "web/src/react/nodes.jsx",
-  "docs/research/build_architecture.py",
 ];
 
 test("кто обещает сторожа, тот называет сторожащий файл", () => {
