@@ -270,7 +270,7 @@ test("31. открытая запись показывается с начала
 
   await openRow(page, 0);
   await pageAt(page, 1).locator(".page-content").first()
-    .evaluate((el) => { el.scrollTop = 120; });
+.evaluate((el) => { el.scrollTop = 120; });
   expect(await scrollOf(page, 1)).toBeGreaterThan(0);
 
   await page.evaluate(() => void window.oneframework.dispatch({ type: "back" }));

@@ -23,14 +23,14 @@ export async function bootApp(page, title) {
   // загрузки. Раньше первым стояло ожидание готовности с потолком в 90 секунд,
   // и чужая сборка платила его на каждой проверке: двадцать три проверки --
   // полчаса ожидания вместо полутора минут работы. Хуже, что выглядело это
-  // зависанием, а не пропуском: 21.08.2026 так и вышло, и настоящую поломку
+  // зависанием, а не пропуском: так и вышло, и настоящую поломку
   // (собранная база копила все примеры подряд) пришлось искать вручную.
   const собрано = await page
-    .evaluate(async () => {
+.evaluate(async () => {
       const r = await fetch("./manifest.webmanifest");
       return r.ok ? (await r.json()).name : null;
     })
-    .catch(() => null);
+.catch(() => null);
   test.skip(собрано !== null && собрано !== title,
             `dist/ holds a different app: ${собрано}`);
 
@@ -43,8 +43,8 @@ export async function bootApp(page, title) {
   // пропуск в отчёте неотличим от «прошло», если смотреть на число зелёных.
   // Поэтому ждём заголовка, и пропускаем только если он так и не стал нашим.
   const свой = await page
-    .waitForFunction((имя) => document.title === имя, title, { timeout: 10_000 })
-    .then(() => true, () => false);
+.waitForFunction((имя) => document.title === имя, title, { timeout: 10_000 })
+.then(() => true, () => false);
   test.skip(!свой, "dist/ holds a different app");
 }
 

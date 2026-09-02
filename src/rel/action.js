@@ -23,10 +23,9 @@ export function isDeclarative(doc) {
  * модели и виды.
  */
 /**
- * Действие на JavaScript -- рантайм уже стоит, это сам webview. Сюда же
- * Kotlin сюда **не** приезжает: `.kt` компилируется TeaVM в WebAssembly
- * и исполняется `wasm_action.js`. Дорога через `kotlinc-js` разбиралась и
- * отменена -- её сборщик удалён 21.08.2026.
+ * Действие на JavaScript -- рантайм уже стоит, это сам webview. Kotlin сюда
+ * **не** приезжает: `.kt` компилируется TeaVM в WebAssembly и исполняется
+ * `wasm_action.js`.
  */
 /**
  * Действие, скомпилированное в WebAssembly. Ни интерпретатора, ни исходника:

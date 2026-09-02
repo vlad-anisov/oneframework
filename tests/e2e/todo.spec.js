@@ -179,10 +179,10 @@ test("19-22. Detail edits text, description, relation and completed", async ({ p
   await detail.locator(".pa-select").click();
   await page.waitForTimeout(500);
   await page
-    .locator(".popover.smart-select-popover.modal-in label")
-    .filter({ hasText: "Работа" })
-    .first()
-    .click();
+.locator(".popover.smart-select-popover.modal-in label")
+.filter({ hasText: "Работа" })
+.first()
+.click();
   await page.waitForTimeout(900);
   record = await readRecord(page, "TodoLine", id);
   const workId = (await activeStack(page))[0].children[0].choices.find(

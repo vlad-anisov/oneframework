@@ -16,7 +16,7 @@ const DESKTOP = { width: 1280, height: 900 };
 
 async function boot(page, size = PHONE) {
   await page.setViewportSize(size);
-  // Своя копия этой проверки жила здесь до 21.08.2026 и отстала: общий помощник
+  // Своя копия этой проверки жила здесь прежде и отстала: общий помощник
   // научился отвечать «то ли это приложение» по манифесту, за секунды вместо
   // полутора минут, а копия продолжала ждать загрузки. Копия не устаревает
   // громко -- она просто перестаёт получать починки.
@@ -196,7 +196,7 @@ test("8. a cell in the table edits the record", async ({ page }) => {
   // the stock column, by its heading -- a Rating renders as a stepper too
   const stock = await page.evaluate(() =>
     [...document.querySelectorAll(".view.tab-active .pa-table thead th")]
-      .findIndex((th) => th.textContent === "Остаток"),
+.findIndex((th) => th.textContent === "Остаток"),
   );
   await row.locator("td").nth(stock).locator(".stepper-button-plus").click();
   await page.waitForTimeout(700);
@@ -250,7 +250,7 @@ test("13. tabs inside a record show one page at a time", async ({ page }) => {
   const visible = await page.evaluate(
     () =>
       [...document.querySelectorAll(".view.tab-active .page-current .pa-tabs__panes > .tab")]
-        .filter((el) => el.classList.contains("tab-active")).length,
+.filter((el) => el.classList.contains("tab-active")).length,
   );
   expect(visible).toBe(1);
 });
@@ -260,9 +260,9 @@ test("14. a Many2many links and unlinks and survives a reload", async ({ page })
   await openScreen(page, "Связи");
   await openFirstRecord(page);
   await page
-    .locator(".view.tab-active .page-current .pa-tabs__bar .tab-link")
-    .nth(1)
-    .click();
+.locator(".view.tab-active .page-current .pa-tabs__bar .tab-link")
+.nth(1)
+.click();
   await page.waitForTimeout(500);
 
   const CHIPS = ".view.tab-active .page-current .pa-field .pa-chips .pa-chip";
@@ -289,9 +289,9 @@ test("14. a Many2many links and unlinks and survives a reload", async ({ page })
     return snap.stacks[snap.active].length === 2;
   }, { timeout: 20_000 });
   await page
-    .locator(".view.tab-active .page-current .pa-tabs__bar .tab-link")
-    .nth(1)
-    .click();
+.locator(".view.tab-active .page-current .pa-tabs__bar .tab-link")
+.nth(1)
+.click();
   await expect(linked).toHaveCount(before + 1);
 });
 
@@ -300,9 +300,9 @@ test("15. a One2many counts the records that point back", async ({ page }) => {
   await openScreen(page, "Связи");
   await openFirstRecord(page);
   await page
-    .locator(".view.tab-active .page-current .pa-tabs__bar .tab-link")
-    .nth(1)
-    .click();
+.locator(".view.tab-active .page-current .pa-tabs__bar .tab-link")
+.nth(1)
+.click();
   await page.waitForTimeout(500);
   // The inline related list is gone -- neither platform has one as a field
   // widget -- so the relation reports itself as a Framework7 badge.
@@ -441,7 +441,7 @@ test("23. navigating in and out leaves nothing of the page behind", async ({ pag
   const probe = () =>
     page.evaluate(() => ({
       listeners: Object.values(window.oneframework.f7.eventsListeners)
-        .reduce((total, handlers) => total + handlers.length, 0),
+.reduce((total, handlers) => total + handlers.length, 0),
       pages: document.querySelectorAll(".page").length,
     }));
   // `void` не украшение. `dispatch` отдаёт обещание, Playwright его ждёт, а
@@ -503,7 +503,7 @@ test("25. an icon is one <i> carrying the ligature, the box and aria-hidden", as
   await expect(icon).toHaveText("palette");
   // Размер задан на месте: у глифа нет ни класса размера, ни таблицы размеров.
   expect(await icon.evaluate((el) => [el.style.fontSize, el.style.width, el.style.height]))
-    .toEqual(["24px", "24px", "24px"]);
+.toEqual(["24px", "24px", "24px"]);
 });
 
 test("26. a stepper carries the field's own bounds, not Framework7 defaults", async ({ page }) => {
@@ -546,7 +546,7 @@ test("27. a range carries our bubble and has exactly one creator", async ({ page
   // просит ровно те 0 и 100, которые Framework7 и так держит умолчанием. А
   // значение у него по умолчанию ноль.
   expect(await range.evaluate((el) => [el.f7Range.min, el.f7Range.max, el.f7Range.value]))
-    .toEqual([0, 100, record.count]);
+.toEqual([0, 100, record.count]);
 
   // И обратный ход: событие приходит теперь доводом составляющей
   // (`onRangeChanged`), а не слушателем `range:changed` на элементе. Ни
@@ -717,7 +717,7 @@ test("34. a segmented control draws its own highlight, exactly once", async ({ p
   await expect(segmented.locator("> .segmented-highlight")).toHaveCount(1);
   // Подсветка идёт последней: она позиционируется по активной кнопке до неё.
   expect(await segmented.evaluate((el) => el.lastElementChild.className))
-    .toBe("segmented-highlight");
+.toBe("segmented-highlight");
   // Кнопку берём по подписи, а не по «не выбранная»: после нажатия выбранной
   // становится она, и такой отбор указал бы уже на соседнюю.
   expect(record.state).not.toBe("draft");
@@ -1260,7 +1260,7 @@ test("50. у нижней навигации пилюля под значком 
  *
  * Пять составляющих Framework7 не имеют класса `*-init` и строятся против
  * настоящего элемента: Calendar, ColorPicker, Autocomplete, Picker,
- * PhotoBrowser. До 20.08.2026 из них была покрыта одна -- выбор колесом
+ * PhotoBrowser. Прежде из них была покрыта одна -- выбор колесом
  * (проверка 15). Остальные четыре меняли молча: разметку им собирал наш код
  * строкой, и обнаружить поломку было нечем.
  */
@@ -1289,7 +1289,7 @@ test("52. выбиральщик цвета красит свою точку и 
   await expect(точка).toHaveCount(1);
   // Точку красит сам ColorPicker (`targetElSetBackgroundColor`), а не мы.
   expect(await точка.evaluate((el) => getComputedStyle(el).backgroundColor))
-    .not.toBe("rgba(0, 0, 0, 0)");
+.not.toBe("rgba(0, 0, 0, 0)");
   const было = (await readRecord(page, "Sample", id)).accent;
 
   await точка.click();
@@ -1311,7 +1311,7 @@ test("53. строка подсказки открывает страницу п
   await page.locator(".page-current .pa-tabs__bar .tab-link:has-text('Детали')").click();
   await page.waitForTimeout(600);
   const строка = page.locator(".page-current .tab-active li a.item-link.item-content")
-    .filter({ has: page.locator(".item-title", { hasText: "Исполнитель" }) }).first();
+.filter({ has: page.locator(".item-title", { hasText: "Исполнитель" }) }).first();
   await expect(строка).toHaveCount(1);
   await строка.click();
   await page.waitForTimeout(900);
@@ -1325,10 +1325,10 @@ test("54. картинка открывается смотрелкой на ве
   // Открывается она только когда значение есть, поэтому в засев витрины
   // положена крошечная картинка.
   const строка = page.locator(`${SAMPLE}li a.item-link.item-content`)
-    .filter({ has: page.locator(".item-after", { hasText: /Открыть/ }) }).first();
+.filter({ has: page.locator(".item-after", { hasText: /Открыть/ }) }).first();
   await expect(строка).toHaveCount(1);
   await строка.click();
   await page.waitForTimeout(900);
   await expect(page.locator(".photo-browser.modal-in, .photo-browser-popup.modal-in").first())
-    .toBeVisible();
+.toBeVisible();
 });

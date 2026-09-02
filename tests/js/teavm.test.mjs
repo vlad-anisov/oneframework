@@ -101,7 +101,7 @@ function собрать(источник, куда) {
   return {
     метки: лежит.filter((и) => и.startsWith(".")).sort(),
     правлен: лежит.filter((и) => и.endsWith(".wasm"))
-      .map((и) => statSync(path.join(куда, и)).mtimeMs),
+.map((и) => statSync(path.join(куда, и)).mtimeMs),
   };
 }
 

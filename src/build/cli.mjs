@@ -21,6 +21,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { Bundle } from "./bundle.mjs";
+import { buildAndroid } from "./android.mjs";
 import { declare as объявитьKotlin } from "./kotlin.mjs";
 import { buildWeb, devWeb } from "./web.mjs";
 
@@ -66,12 +67,14 @@ function писатьБазу(план) {
 
 function разобрать(argv) {
   const [цель, пакет, ...прочее] = argv;
-  const опции = { цель, пакет, root: null, extra: null, dev: false, port: 5173, open: false };
+  const опции = { цель, пакет, root: null, extra: null, dev: false, port: 5173,
+                  open: false, install: false };
   for (let i = 0; i < прочее.length; i += 1) {
     if (прочее[i] === "--root") опции.root = прочее[++i];
     else if (прочее[i] === "--extra") опции.extra = прочее[++i];
     else if (прочее[i] === "--dev") опции.dev = true;
     else if (прочее[i] === "--open") опции.open = true;
+    else if (прочее[i] === "--install") опции.install = true;
     else if (прочее[i] === "--port") опции.port = Number(прочее[++i]);
   }
   return опции;
@@ -79,10 +82,10 @@ function разобрать(argv) {
 
 export function main(argv) {
   const о = разобрать(argv);
-  if (о.цель !== "web" || !о.пакет) {
+  if (!["web", "android"].includes(о.цель) || !о.пакет) {
     process.stderr.write(
-      "node cli.mjs web <пакет.json> [--root <куда>] [--extra <файл.json>] " +
-      "[--dev] [--port N] [--open]\n");
+      "node cli.mjs <web|android> <пакет.json> [--root <куда>] [--extra <файл.json>] " +
+      "[--dev] [--port N] [--open] [--install]\n");
     return 2;
   }
   // `.kt` -- это ещё не пакет, а приложение: чтобы напечатать пакет, его надо
@@ -96,7 +99,11 @@ export function main(argv) {
     ? JSON.parse(readFileSync(о.extra, "utf8"))
     : { scripts: [], styles: [] };
   const опции = { доп, buildDb: писатьБазу, port: о.port, open: о.open };
-  if (о.dev) devWeb(root, пакет, опции);
+  if (о.цель === "android") {
+    // Веб внутри APK -- обычная боевая сборка: тот же код, что и для браузера.
+    buildAndroid(root, { собратьВеб: () => buildWeb(root, пакет, опции),
+                         install: о.install });
+  } else if (о.dev) devWeb(root, пакет, опции);
   else buildWeb(root, пакет, опции);
   return 0;
 }

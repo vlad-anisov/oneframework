@@ -341,7 +341,7 @@ test("кадр называет свой уровень даже когда ба
 test("один вид приходит тем способом, о котором попросило действие", async () => {
   const { rt } = await поднять(один("Board", Board, [Note], [NoteDetail, Board]));
   const кнопки = Object.fromEntries(стек(rt.snapshot())[0].children
-    .filter((c) => c.type === "button").map((c) => [c.label, c]));
+.filter((c) => c.type === "button").map((c) => [c.label, c]));
   for (const [подпись, ждём] of [["Быстро", "sheet"], ["Медленно", "page"]]) {
     rt.dispatch({ type: "action", button_id: кнопки[подпись].id, context: {} });
     const верх = стек(rt.snapshot()).at(-1);

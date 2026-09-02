@@ -3,8 +3,7 @@
  *
  * Писали двое: сборка на питоне (`model/storage.py`) и устройство на
  * JavaScript. Формат один, реализации две -- расхождение видно только на
- * обмене, у пользователя. Питоновский писатель удалён; правила остались, и
- * проверяются они на том, что вышло.
+ * обмене, у пользователя.
  *
  * Приложений три, и все объявлены привязкой на JavaScript. Раньше здесь брались
  * `todo`, `gtasks` и `kitchen` -- каждое отдельным процессом, потому что реестр
@@ -31,7 +30,7 @@ async function содержимое(файл) {
   const выбрать = (sql) => h.selectObjects(sql);
   const таблицы = Object.fromEntries(
     выбрать("SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name")
-      .map((r) => [r.name, r.sql]));
+.map((r) => [r.name, r.sql]));
   const определения = выбрать(
     'SELECT "kind","name","fingerprint","revision" FROM "_oneframework_def" ORDER BY "kind","name"');
   const мета = Object.fromEntries(
@@ -65,7 +64,7 @@ for (const имя of ["богатый", "todo", "notes"]) {
     // результат.
     const { таблицы } = собрано[имя];
     const свои = Object.keys(таблицы)
-      .filter((т) => !т.startsWith("_oneframework") && !т.startsWith("sqlite"));
+.filter((т) => !т.startsWith("_oneframework") && !т.startsWith("sqlite"));
     assert.ok(свои.length, "ни одной таблицы приложения");
     // Колонка версий -- у таблиц **записей**. У таблицы связи её нет и быть не
     // может: там нет записи, там две ссылки, и сливаются они наличием строки,

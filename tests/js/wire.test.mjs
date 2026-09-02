@@ -50,10 +50,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".
 const SCHEMA = JSON.parse(readFileSync(path.join(ROOT, "protocol", "wire.json"), "utf8"));
 const VERSION = SCHEMA.version;
 
-//: Сторона, принимающая действия. До 21.08.2026 их было две, и одна проверка
-//: сверяла их между собой. Питоновский эталон удалён, и осталась та, что стоит
-//: на устройстве -- она и сверяется **со схемой**, а не с двойником: двойник
-//: мог сойтись с ней в одной и той же ошибке, схема не может.
+//: Сторона, принимающая действия. Прежде их было две, и одна проверка
+//: сверяла их между собой.
 const RUNTIME = path.join(ROOT, "src/runtime/session.js");
 
 /**
@@ -216,8 +214,8 @@ function читаемое(файл) {
   // предыдущего на середине -- то есть недосчитал бы прочитанных ключей.
   const слова = new Set(["if", "for", "while", "switch", "catch", "return", "function"]);
   const начала = [...текст.matchAll(/\n {2}([A-Za-z_$][\w$]*)\(/g)]
-    .filter((м) => !слова.has(м[1]))
-    .map((м) => [м.index, м[1]]);
+.filter((м) => !слова.has(м[1]))
+.map((м) => [м.index, м[1]]);
   const наружу = {};
   начала.forEach(([где, имя], и) => {
     if (!имя.startsWith("on_")) return;
@@ -344,7 +342,7 @@ test("документ называет те же ключи кадра, что 
   // схеме: таблица короче схемы -- это ключ, которого у нового рантайма не
   // будет, и узнается это на глаз в рендерере.
   const схема = new Set([...SCHEMA.frame.required,
-                         ...(SCHEMA.frame.optional || []).map((к) => `${к}?`)]);
+...(SCHEMA.frame.optional || []).map((к) => `${к}?`)]);
   assert.deepEqual([...ключиКадраДокумента()].sort(), [...схема].sort());
 });
 
@@ -372,7 +370,7 @@ test("описание строки едет один раз, а записи --
   for (const узел of узлы(снимок)) {
     if (узел.type !== "list" || !(узел.rows || []).length) continue;
     const гнёзд = Math.max(0, ...[...обойти(узел)].filter((н) => н.bind)
-      .map((н) => Math.max(...Object.values(н.bind)) + 1));
+.map((н) => Math.max(...Object.values(н.bind)) + 1));
     for (const строка of узел.rows) {
       assert.equal(строка.v.length, гнёзд,
                    `${узел.id}: ${строка.v.length} значений на ${гнёзд} гнёзд`);
@@ -411,8 +409,8 @@ test("номера узлов не повторяются внутри кадр�
       // записей, -- поэтому единственность спрашивается у дерева кадра, а не
       // у строк.
       const номера = (кадр.children || [])
-        .flatMap((c) => [...обойти({ ...c, rows: [] })])
-        .filter((н) => "id" in н).map((н) => н.id);
+.flatMap((c) => [...обойти({ ...c, rows: [] })])
+.filter((н) => "id" in н).map((н) => н.id);
       assert.equal(номера.length, new Set(номера).size, `повтор номеров в ${кадр.view}`);
     }
   }

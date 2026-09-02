@@ -297,8 +297,8 @@ test("34. у вкладки сверху один указатель -- лини
   // вкладки со значком, потому что у остальных значка нет.
   await boot(page);
   const бар = page.locator(".pa-tabs__panes .tab-active").first()
-    .locator("xpath=ancestor::div[contains(@class,'pa-tabs')]").first()
-    .locator(".pa-tabs__bar").first();
+.locator("xpath=ancestor::div[contains(@class,'pa-tabs')]").first()
+.locator(".pa-tabs__bar").first();
   const значок = бар.locator(".tab-link.tab-link-active i.icon").first();
   await expect(значок).toHaveCount(1);
 
@@ -327,7 +327,7 @@ test("34. у вкладки сверху один указатель -- лини
   const [л, в] = await Promise.all([
     линия.evaluate((el) => el.getBoundingClientRect().toJSON()),
     бар.locator(".tab-link.tab-link-active").first()
-      .evaluate((el) => el.getBoundingClientRect().toJSON()),
+.evaluate((el) => el.getBoundingClientRect().toJSON()),
   ]);
   expect(Math.round(л.width)).toBe(Math.round(в.width));
   expect(Math.abs(л.left - в.left)).toBeLessThan(2);
@@ -366,7 +366,7 @@ test("35. выбор вкладки двигает листалку, а не т�
 });
 
 test("36. приехавший обменом вид меняет кадр сразу, без перезагрузки", async ({ page }) => {
-  // Главное обещание каркаса, и до 20.08.2026 оно выполнялось только наполовину.
+  // Главное обещание каркаса, и прежде оно выполнялось только наполовину.
   // Схема и документы читались из базы, а не из сборки, -- но читались **один
   // раз за жизнь воркера**. Приехавший вид ложился в `_oneframework_def` и
   // ждал перезапуска: `apply_changes` накладывал changeset, помечал модели
@@ -426,7 +426,7 @@ test("36. приехавший обменом вид меняет кадр ср�
 });
 
 test("37. воркер исполняет запросы по одному, а не вперемешку", async ({ page }) => {
-  // До 20.08.2026 `self.onmessage` был объявлен `async`, и на каждое сообщение
+  // Прежде `self.onmessage` был объявлен `async`, и на каждое сообщение
   // заводилась своя цепочка. Пока одна ждала -- питон на устройстве поднимается
   // секундами, -- воркер начинал следующую. Беда не в порядке ответов, а в том,
   // что обе трогают **одну синхронную базу**: вторая приходила в неё посреди
@@ -446,7 +446,7 @@ test("37. воркер исполняет запросы по одному, а �
   await page.locator(".pa-tabs__panes .tab-active .pa-listmenu").first().click();
   await page.waitForTimeout(600);
   await page.locator(".actions-modal.modal-in .actions-button", { hasText: /Переименовать/ })
-    .first().click();
+.first().click();
   await page.waitForTimeout(1000);
 
   const итог = await page.evaluate(async () => {
