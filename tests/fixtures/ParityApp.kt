@@ -23,10 +23,9 @@ import oneframework.boolean
 import oneframework.button
 import oneframework.col
 import oneframework.color
-import oneframework.count
 import oneframework.date
 import oneframework.datetime
-import oneframework.exists
+import oneframework.expr
 import oneframework.filter
 import oneframework.group
 import oneframework.icon
@@ -120,7 +119,7 @@ object Полки : View("Полки", title = "Полки") {
                         "{item.name}",
                         icon("book"),
                         pill(
-                            count(Книга, (Книга.shelf eq item.id) and !Книга.read),
+                            expr("count(Книга, record.shelf = item.id & !record.read)"),
                             shown = "closed",
                         ),
                         button(
@@ -133,7 +132,7 @@ object Полки : View("Полки", title = "Полки") {
                             item = Строка,
                             open = Карточка,
                             label = "{item.name}",
-                            domain = (Книга.shelf eq item.id) and !Книга.read,
+                            domain = expr("record.shelf = item.id & !record.read"),
                             menu = menu(
                                 button("Новая книга",
                                        action = Create(Книга, open = Карточка, draft = true)),
@@ -141,17 +140,16 @@ object Полки : View("Полки", title = "Полки") {
                                     "Удалить прочитанные",
                                     action = Delete(
                                         model = Книга,
-                                        domain = (Книга.shelf eq item.id) and Книга.read,
+                                        domain = expr("record.shelf = item.id & record.read"),
                                         confirm = "Удалить прочитанное с «{item.name}»?",
                                     ),
-                                    enabled = exists(Книга,
-                                                     (Книга.shelf eq item.id) and Книга.read),
+                                    enabled = expr("exists(Книга, record.shelf = item.id & record.read)"),
                                 ),
                                 icon = "more_horiz",
                             ),
                             search = search(
                                 Книга.title,
-                                filter("Непрочитанные", !Книга.read, default = true),
+                                filter("Непрочитанные", expr("!record.read"), default = true),
                                 filter("Прочитанные", Книга.read),
                                 sort("По порядку", Книга.sequence, default = true),
                                 sort("Позже куплённые", Книга.bought.desc(), section = true),
@@ -159,9 +157,9 @@ object Полки : View("Полки", title = "Полки") {
                         ),
                         accordion(
                             list(Книга, item = Строка,
-                                 domain = (Книга.shelf eq item.id) and Книга.read),
+                                 domain = expr("record.shelf = item.id & record.read")),
                             label = "Прочитанные",
-                            visible = exists(Книга, (Книга.shelf eq item.id) and Книга.read),
+                            visible = expr("exists(Книга, record.shelf = item.id & record.read)"),
                         ),
                     ),
                 )

@@ -5,9 +5,9 @@
  * строку, чем встраивать в свой язык четырнадцать родов узлов. Разворачивает
  * его сборка, и в базу едет то же дерево, что и от питоновского приложения.
  *
- * Проверяется вся дорога, а не разборщик: разборщик сверен с питоновским DSL
- * отдельно (`tests/test_expr_text.py`). Здесь -- что текст вправду
- * разворачивается по пути и что неразобранное до устройства не доезжает.
+ * Проверяется вся дорога: что текст вправду разворачивается по пути и что
+ * неразобранное до устройства не доезжает. Сам разборщик -- ниже, свёртками:
+ * сверять его с питоновским DSL больше не с чем, DSL стал этой же строкой.
  */
 
 import test, { before } from "node:test";
@@ -15,6 +15,7 @@ import assert from "node:assert/strict";
 
 import { Bundle } from "../../src/build/bundle.mjs";
 import { buildPlan } from "../../src/build/plan.mjs";
+import { parseExpr } from "../../src/build/exprtext.mjs";
 import { подопытноеTodo } from "./помощь.mjs";
 
 let исходный = null;
@@ -127,4 +128,60 @@ test("выражение строкой внутри модели тоже ра�
   const свой = план(п).defs.find((д) => д[0] === "model" && д[1] === модель.name)[2];
   assert.deepEqual(свой.fields.find((f) => f.name === "громко").compute,
                    { op: "upper", args: [{ r: "name" }] });
+});
+
+// --------------------------------------------------------------------------
+// свёртки: count/exists/sum/min/max
+// --------------------------------------------------------------------------
+//: Свёртки -- пятая часть договора выражений, и до сих пор строкой их было не
+//: записать: разборщик знал ссылки, сравнения и арифметику, но не «сколько
+//: записей другой модели отвечают условию». Значит текстовая дорога была
+//: беднее питоновской, и объявить одно и то же на трёх языках было нельзя.
+test("свёртка строкой даёт то же дерево, что перегрузка операторов", () => {
+  // Слово в слово то, что печатает `Exists(Task, (record.board == item.id) &
+  // record.done)` у питоновской привязки. Сверено с ней при переносе.
+  assert.deepStrictEqual(
+    parseExpr("exists(Task, record.board = item.id & record.done)"),
+    { agg: "exists", model: "Task",
+      domain: { op: "&", p: [{ op: "=", l: { r: "board" }, r: { i: "id" } },
+                             { r: "done" }] } });
+});
+
+test("домен необязателен: свёртка по всей модели", () => {
+  assert.deepStrictEqual(parseExpr("count(Task)"), { agg: "count", model: "Task" });
+});
+
+test("что складывать -- отдельным доводом перед доменом", () => {
+  const дерево = parseExpr("sum(Task, record.price, record.done)");
+  assert.deepStrictEqual(дерево.of, { r: "price" });
+  assert.deepStrictEqual(дерево.domain, { r: "done" });
+});
+
+test("via и on_empty пишутся именованными -- порядок не надо помнить", () => {
+  const дерево = parseExpr("sum(Task, record.price, via=board, on_empty=0)");
+  assert.strictEqual(дерево.via, "board");
+  assert.strictEqual(дерево.on_empty, 0);
+  // Домена нет, и это не то же, что пустой домен: без него свёртка идёт по
+  // всей модели, а `domain: null` означало бы условие, которого нет.
+  assert.ok(!("domain" in дерево));
+});
+
+test("именованный довод после домена не путается с ним", () => {
+  const дерево = parseExpr("count(Task, record.done, on_empty=0)");
+  assert.deepStrictEqual(дерево.domain, { r: "done" });
+  assert.strictEqual(дерево.on_empty, 0);
+});
+
+test("неизвестный именованный довод -- отказ, а не пропуск", () => {
+  // Молча проглоченный довод уехал бы свёрткой без него: число на экране
+  // другое, и связать его с опечаткой нечем.
+  assert.throws(() => parseExpr("count(Task, record.done, чего=1)"), /чего/);
+});
+
+test("модель называется словом, а не строкой", () => {
+  assert.throws(() => parseExpr('count("Task")'), /ждали слово/);
+});
+
+test("свёртка без модели отвергнута", () => {
+  assert.throws(() => parseExpr("count()"), /ждали слово/);
 });

@@ -1,7 +1,7 @@
 /**
  * Точка входа сборщика: пакет объявления -> собранное приложение.
  *
- *     node src/build/cli.mjs web <пакет.json|App.kt> [--root <куда>]
+ *     node src/build/cli.mjs web <пакет.json> [--root <куда>]
  *                                       [--extra <файл.json>] [--dev] [--port N]
  *
  * Языка приложения отсюда почти не видно: приезжает пакет, а чем он напечатан
@@ -22,7 +22,6 @@ import { fileURLToPath } from "node:url";
 
 import { Bundle } from "./bundle.mjs";
 import { buildAndroid } from "./android.mjs";
-import { declare as объявитьKotlin } from "./kotlin.mjs";
 import { buildWeb, devWeb } from "./web.mjs";
 
 const ЗДЕСЬ = path.dirname(fileURLToPath(import.meta.url));
@@ -80,6 +79,30 @@ function разобрать(argv) {
   return опции;
 }
 
+/**
+ * Собрать по уже напечатанному пакету. Отсюда зовёт команда (`main.mjs`).
+ *
+ * Пакет приходит разобранным, а не путём к файлу: печатает его диспетчер
+ * языков, и класть его на диск ради того, чтобы тут же прочесть, значит
+ * заводить временный файл на ровном месте.
+ */
+export function собрать(doc, {
+  цель = "web", root = null, доп = { scripts: [], styles: [] },
+  dev = false, port = 5173, open = false, install = false, source = null,
+} = {}) {
+  const пакет = new Bundle(doc, { source });
+  const куда = root || корень();
+  const опции = { доп, buildDb: писатьБазу, port, open };
+  if (цель === "android") {
+    // Веб внутри APK -- обычная боевая сборка: тот же код, что и для браузера.
+    buildAndroid(куда, { собратьВеб: () => buildWeb(куда, пакет, опции), install });
+  } else if (dev) devWeb(куда, пакет, опции);
+  else buildWeb(куда, пакет, опции);
+  return 0;
+}
+
+export { корень };
+
 export function main(argv) {
   const о = разобрать(argv);
   if (!["web", "android"].includes(о.цель) || !о.пакет) {
@@ -88,24 +111,12 @@ export function main(argv) {
       "[--dev] [--port N] [--open] [--install]\n");
     return 2;
   }
-  // `.kt` -- это ещё не пакет, а приложение: чтобы напечатать пакет, его надо
-  // собрать под JVM и запустить. Умеет это ядро, и питон в цепочке не нужен.
-  const doc = о.пакет.endsWith(".kt")
-    ? объявитьKotlin(о.пакет)
-    : JSON.parse(readFileSync(о.пакет, "utf8"));
-  const пакет = new Bundle(doc, { source: о.пакет });
-  const root = о.root || корень();
-  const доп = о.extra
-    ? JSON.parse(readFileSync(о.extra, "utf8"))
-    : { scripts: [], styles: [] };
-  const опции = { доп, buildDb: писатьБазу, port: о.port, open: о.open };
-  if (о.цель === "android") {
-    // Веб внутри APK -- обычная боевая сборка: тот же код, что и для браузера.
-    buildAndroid(root, { собратьВеб: () => buildWeb(root, пакет, опции),
-                         install: о.install });
-  } else if (о.dev) devWeb(root, пакет, опции);
-  else buildWeb(root, пакет, опции);
-  return 0;
+  return собрать(JSON.parse(readFileSync(о.пакет, "utf8")), {
+    цель: о.цель, root: о.root, dev: о.dev, port: о.port, open: о.open,
+    install: о.install, source: о.пакет,
+    доп: о.extra ? JSON.parse(readFileSync(о.extra, "utf8"))
+                 : { scripts: [], styles: [] },
+  });
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

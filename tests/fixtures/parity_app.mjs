@@ -15,6 +15,7 @@ import {
   List, Menu, Pill, Repeat, Row, Save, Screen, Search, Section, Sort, Tab, Tabs,
   Text, app, boolean, color, date, datetime, declare, float as float_, integer,
   many2one, model, monetary, selection, string, text, time, view,
+  expr,
 } from "../../../oneframework-js/index.mjs";
 
 const Полка = model("Полка", {
@@ -79,7 +80,7 @@ const Полки = view("Полки", {
       Repeat(Полка, (item) => Tab(
         "{item.name}",
         Icon("book"),
-        Pill(Count(Книга, record.shelf.eq(item.id).and(record.read.not())),
+        Pill(expr("count(Книга, record.shelf = item.id & !record.read)"),
              { when: "closed" }),
         Button({ place: "fab",
                  action: Книга.create({ open: Карточка, values: { shelf: item.id } }) }),
@@ -87,22 +88,22 @@ const Полки = view("Полки", {
           item: Строка,
           open: Карточка,
           label: "{item.name}",
-          domain: record.shelf.eq(item.id).and(record.read.not()),
+          domain: expr("record.shelf = item.id & !record.read"),
           menu: Menu(
             Button("Новая книга", { action: Книга.create({ open: Карточка, draft: true }) }),
             Button("Удалить прочитанные", {
               action: Delete({
                 model: Книга,
-                domain: record.shelf.eq(item.id).and(record.read),
+                domain: expr("record.shelf = item.id & record.read"),
                 confirm: "Удалить прочитанное с «{item.name}»?",
               }),
-              enabled: Exists(Книга, record.shelf.eq(item.id).and(record.read)),
+              enabled: expr("exists(Книга, record.shelf = item.id & record.read)"),
             }),
             { icon: "more_horiz" },
           ),
           search: Search(
             record.title,
-            Filter("Непрочитанные", record.read.not(), { default: true }),
+            Filter("Непрочитанные", expr("!record.read"), { default: true }),
             Filter("Прочитанные", record.read),
             Sort("По порядку", record.sequence, { default: true }),
             Sort("Позже куплённые", record.bought.desc(), { section: true }),
@@ -110,9 +111,9 @@ const Полки = view("Полки", {
         }),
         Accordion(
           List(Книга, { item: Строка,
-                        domain: record.shelf.eq(item.id).and(record.read) }),
+                        domain: expr("record.shelf = item.id & record.read") }),
           { label: "Прочитанные",
-            visible: Exists(Книга, record.shelf.eq(item.id).and(record.read)) },
+            visible: expr("exists(Книга, record.shelf = item.id & record.read)") },
         ),
       )),
       Button("Полка", { action: Create(Полка) }),
