@@ -9,9 +9,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
+import { parseExpr } from "../../src/build/exprtext.mjs";
+
 import {
-  Accordion, Button, Count, Delete, Exists, List, Menu, Pill, Repeat, Row,
-  Tab, Tabs, boolean, many2one, model, parseTemplate, string, toJson, view,
+  Accordion, Button, Delete, List, Menu, Pill, Repeat, Row,
+  Tab, Tabs, boolean, many2one, model, parseTemplate, string, toJson, view, expr,
 } from "../../../oneframework-js/index.mjs";
 
 const Board = model("Board", { fields: { name: string("Название") } });
@@ -71,8 +73,12 @@ test("домен и порядок повторителя едут, только
 // ------------------------------------------------------------------ счётчик
 test("счётчик везёт вопрос, а не ответ", () => {
   // Число приезжает с данными, когда документ развёрнут; документ несёт запрос.
-  const п = узел(() => Pill(Count(Task, null)));
-  assert.deepEqual(п.value, { agg: "count", model: "Task" });
+  const п = узел(() => Pill(expr("count(Task)")));
+  // В документе -- строка: дерево из неё собирает сборка, и до устройства
+  // доезжает оно. Здесь сверяется и то и другое: строка на месте, и она правда
+  // свёртка, а не что-то похожее.
+  assert.deepEqual(п.value, { text: "count(Task)" });
+  assert.deepEqual(parseExpr(п.value.text), { agg: "count", model: "Task" });
 });
 
 test("считать нечего -- показывать нечего", () => {
@@ -124,8 +130,9 @@ test("складной блок начинается свёрнутым, пок�
 test("условие раздела едет, только когда оно есть", () => {
   // Умолчание -- «виден»: ключ в документе значил бы, что кто-то это решал.
   assert.ok(!("visible" in узел(() => Accordion(Row(), { label: "Р" }))));
-  const с = узел(() => Accordion(Row(), { visible: Exists(Task, null) }));
-  assert.deepEqual(с.visible, { agg: "exists", model: "Task" });
+  const с = узел(() => Accordion(Row(), { visible: expr("exists(Task)") }));
+  assert.deepEqual(с.visible, { text: "exists(Task)" });
+  assert.deepEqual(parseExpr(с.visible.text), { agg: "exists", model: "Task" });
 });
 
 // ---------------------------------------------------------------- удаление

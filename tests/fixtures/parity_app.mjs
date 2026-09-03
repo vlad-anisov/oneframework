@@ -11,7 +11,7 @@
  */
 
 import {
-  Accordion, Button, Col, Count, Create, Delete, Exists, Filter, Group, Icon,
+  Accordion, Button, Col, Create, Delete, Filter, Group, Icon,
   List, Menu, Pill, Repeat, Row, Save, Screen, Search, Section, Sort, Tab, Tabs,
   Text, app, boolean, color, date, datetime, declare, float as float_, integer,
   many2one, model, monetary, selection, string, text, time, view,

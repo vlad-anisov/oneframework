@@ -14,8 +14,8 @@ import { bindRow } from "../../web/src/react/bindrow.js";
 import { поднятьРантайм, собратьБазу, поднятьФайл } from "./помощь.mjs";
 
 const л = await import("../../../oneframework-js/index.mjs");
-const { Button, List, Row, Screen, Tab, Tabs, app, boolean, date, declare, model,
-        string, view } = л;
+const { Button, List, Row, Screen, Tab, Tabs, app, boolean, date, declare, expr,
+        model, string, view } = л;
 
 // --------------------------------------------------------------------------
 // подопытные приложения
@@ -73,20 +73,20 @@ const Memo = model("Memo", {
 const SolidRow = view("SolidRow", {
   model: Memo,
   ui: (r) => Row(r.title({ widget: "title" }),
-                 r.done({ widget: "checkbox", visible: r.done.not() })),
+                 r.done({ widget: "checkbox", visible: expr("!record.done") })),
 });
 /** Пустая колонка под `is_null()`: неизвестности не возникает. */
 const NullableRow = view("NullableRow", {
   model: Memo,
   ui: (r) => Row(r.title({ widget: "title" }),
-                 r.done({ widget: "checkbox", visible: r.due.isNull() }),
-                 r.due({ visible: r.due.isNull().not() })),
+                 r.done({ widget: "checkbox", visible: expr("record.due is null") }),
+                 r.due({ visible: expr("record.due is not null") })),
 });
 /** Пустая колонка в сравнении: SQL ответил бы неизвестностью. */
 const CompareRow = view("CompareRow", {
   model: Memo,
   ui: (r) => Row(r.title({ widget: "title" }),
-                 r.done({ widget: "checkbox", visible: r.due.ne("2026-02-01") })),
+                 r.done({ widget: "checkbox", visible: expr('record.due != "2026-02-01"') })),
 });
 
 const приложение = (заголовок, экраны, модели, виды, корень) =>
@@ -467,13 +467,15 @@ test("отказ, который он держит, -- настоящее рас
   // оправдать, и сужать его было бы не от чего.
   const { rt, db, модели } = await стена("CompareRow");
   const { toJson } = await import("../../../oneframework-js/src/expr.mjs");
-  const { recordProxy } = await import("../../../oneframework-js/src/model.mjs");
   const { conditionColumn } = await import("../../src/runtime/session.js");
   const { QueryContext, buildSelect, compileDomain } =
     await import("../../src/runtime/query.js");
   const { evaluate } = await import("../../src/expr.js");
 
-  const узел = toJson(recordProxy(Memo).due.ne("2026-02-01"));
+  // Дерево, а не строка: рантайм строк не видит -- их разворачивает сборка,
+  // и правило, о котором эта проверка, живёт после разворота.
+  const { parseExpr } = await import("../../src/build/exprtext.mjs");
+  const узел = parseExpr('record.due != "2026-02-01"');
   const m = модели.Memo;
   assert.equal(conditionColumn(узел, m, new QueryContext(m)), null,
                "правило пустило его в SQL");

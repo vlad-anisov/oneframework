@@ -22,8 +22,8 @@ let пакет = null;
 
 before(async () => {
   const {
-    Accordion, Button, Count, Delete, Exists, List, Menu, Pill, Repeat, Row,
-    Screen, Tab, Tabs, app, boolean, declare, many2one, model, string, view,
+    Accordion, Button, Delete, List, Menu, Pill, Repeat, Row,
+    Screen, Tab, Tabs, app, boolean, declare, expr, many2one, model, string, view,
   } = await import("../../../oneframework-js/index.mjs");
 
   const Board = model("Board", { fields: { name: string("Название") } });
@@ -40,24 +40,24 @@ before(async () => {
     ui: (record) => Tabs(
       Repeat(Board, (item) => Tab(
         "{item.name}",
-        Pill(Count(Task, record.board.eq(item.id).and(record.done.not()))),
+        Pill(expr("count(Task, record.board = item.id & !record.done)")),
         List(Task, {
           item: TaskRow,
           label: "{item.name}",
-          domain: record.board.eq(item.id).and(record.done.not()),
+          domain: expr("record.board = item.id & !record.done"),
           menu: Menu(Button("Удалить выполненные", {
             action: Delete({
               model: Task,
-              domain: record.board.eq(item.id).and(record.done),
+              domain: expr("record.board = item.id & record.done"),
               confirm: "Удалить всё выполненное в «{item.name}»?",
             }),
-            enabled: Exists(Task, record.board.eq(item.id).and(record.done)),
+            enabled: expr("exists(Task, record.board = item.id & record.done)"),
           })),
         }),
         Accordion(
-          List(Task, { item: TaskRow, domain: record.board.eq(item.id).and(record.done) }),
+          List(Task, { item: TaskRow, domain: expr("record.board = item.id & record.done") }),
           { label: "Выполненные",
-            visible: Exists(Task, record.board.eq(item.id).and(record.done)) },
+            visible: expr("exists(Task, record.board = item.id & record.done)") },
         ),
       )),
     ),
@@ -141,7 +141,7 @@ test("номера не сталкиваются между копиями", asy
 });
 
 test("условие, на которое отвечают данные, решает, есть ли узел", async () => {
-  // `visible: Exists(...)` -- это питоновский `if`, сказанный как условие.
+  // `visible: expr("exists(...)")` -- это питоновский `if`, сказанный условием.
   const { rt } = await поднять();
   const [работа, дом] = вкладки(rt);
   assert.deepEqual(работа.children.map((c) => c.type), ["list", "accordion"]);

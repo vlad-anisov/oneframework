@@ -308,8 +308,8 @@ test("отбор, которому не удовлетворит ни одна �
   // можно было, пока рантайм жил в том же процессе; теперь он тот, что стоит на
   // устройстве, и приложение попадает к нему той же дорогой, что настоящее.
   const {
-    Button, Filter, List, Screen, Search, Sort, app, boolean, declare, integer,
-    model, string, view,
+    Button, Filter, List, Screen, Search, Sort, app, boolean, declare, expr,
+    integer, model, string, view,
   } = await import("../../../oneframework-js/index.mjs");
 
   const Заметка = model("Заметка", {
@@ -325,7 +325,7 @@ test("отбор, которому не удовлетворит ни одна �
           record.text,
           // Через «или» -- значит одного значения нет: новая запись не может
           // быть одновременно и той, и другой.
-          Filter("Любая", record.completed.or(record.completed.not()), { default: true }),
+          Filter("Любая", expr("record.completed | !record.completed"), { default: true }),
           Sort("По порядку", record.sequence, { default: true }),
         ),
       }),
