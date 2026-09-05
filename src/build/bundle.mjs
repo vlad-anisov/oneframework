@@ -30,7 +30,7 @@ function договор() {
   for (let шаг = 0; шаг < 8; шаг += 1) {
     // Копия договора рядом с корнем пакета -- она и едет в поставке: у
     // поставившего пакет никакого дерева с `protocol/` нет. Совпадение копии
-    // с договором сторожит `tests/test_protocol.py`.
+    // с договором сторожит `tests/together/test_protocol.py`.
     try {
       return JSON.parse(readFileSync(join(где, "field-types.json"), "utf8"));
     } catch { /* нет так нет -- ищем выше */ }

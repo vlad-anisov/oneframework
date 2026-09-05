@@ -1,5 +1,5 @@
 {
-  "$comment": "Что все языки обязаны знать о полях одинаково. Порождается oneframework.protocol.document(), сторожится tests/test_protocol.py. Руками не править: правка уедет при первой пересборке.",
+  "$comment": "Что все языки обязаны знать о полях одинаково. Порождается oneframework.protocol.document(), сторожится tests/together/test_protocol.py. Руками не править: правка уедет при первой пересборке.",
   "version": 1,
   "types": {
     "binary": {

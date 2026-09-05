@@ -34,7 +34,7 @@ const ШАПКА = `package oneframework
  *
  * Порождается из \`protocol/field-types.json\`
  * (\`node src/build/kotlin-table.mjs\`), совпадение сторожит
- * \`tests/test_protocol.py\`. Руками не править: правка уедет при первой
+ * \`tests/together/test_protocol.py\`. Руками не править: правка уедет при первой
  * пересборке.
  */
 internal const val FIELD_TYPES_JSON: String =

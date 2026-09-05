@@ -721,7 +721,7 @@ test("кто обещает сторожа, тот называет сторож
   for (const имя of ОБЕЩАЮТ_СТОРОЖА) {
     const текст = readFileSync(path.join(ROOT, имя), "utf8");
     assert.ok(текст.includes(здесь), `${имя} не называет сторожа провода (${здесь})`);
-    assert.ok(!текст.includes("tests/test_protocol.py"),
+    assert.ok(!текст.includes("tests/together/test_protocol.py"),
               `${имя} отправляет за проводом в договор о полях`);
   }
 });

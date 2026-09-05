@@ -14,7 +14,7 @@
  *
  * Отпечаток обязан совпадать с питоновским байт в байт: по нему changeset
  * узнают на другой стороне и по нему же решают, слать ли определение. Сторож --
- * `tests/test_js_sha256_parity.py`, и он сверяет с `hashlib`, а не сам с собой.
+ * `tests/together/test_js_sha256_parity.py`, и он сверяет с `hashlib`, а не сам с собой.
  */
 import { sha256 } from "@noble/hashes/sha2.js";
 
